@@ -1,0 +1,23 @@
+Id:
+55402751
+
+Title:
+Angular app has to clear cache after new deployment
+
+Body:
+<p>We have an Angular 6 application. It’s served on Nginx. And SSL is on.</p>
+
+<p>When we deploy new codes, most of new features work fine but not for some changes. For example, if the front-end developers update the service connection and deploy it, users have to open incognito window or clear cache to see the new feature.</p>
+
+<p>What type of changes are not updated automatically? Why are they different from others?</p>
+
+<p>What’s the common solution to avoid the issue?</p>
+
+Tags:
+<javascript><angular><nginx><deployment>
+
+CreationDate:
+2019-03-28 16:37:07
+
+Y:
+HQ

@@ -1,0 +1,21 @@
+Id:
+43205917
+
+Title:
+What is pass-through load balancer? How is it different from proxy load balancer?
+
+Body:
+<p>Google Cloud Network load balancer is a pass-through load balancer and not a proxy load balancer. ( <a href="https://cloud.google.com/compute/docs/load-balancing/network/" rel="noreferrer">https://cloud.google.com/compute/docs/load-balancing/network/</a> ). </p>
+
+<p>I can not find any resources in general on a pass through LB. Both HAProxy and Nginx seems to be proxy LBs. I'm guessing that pass through LB would be redirecting the clients directly to the servers. In what scenarios it would be beneficial?</p>
+
+<p>Are there any other type of load balancers except pass-through and proxy?</p>
+
+Tags:
+<nginx><proxy><google-cloud-platform><load-balancing><haproxy>
+
+CreationDate:
+2017-04-04 11:27:20
+
+Y:
+HQ

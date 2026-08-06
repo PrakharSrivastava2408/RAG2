@@ -1,0 +1,134 @@
+Nginx Server Troubleshooting Cheat Sheet
+Top Common Errors & Fixes for RAG Data Ingestion
+
+Connection & Port Errors
+
+Error Log: bind() to 0.0.0.0:80 failed (98: Address already in use)
+Explanation: Another process (like Apache or a ghost Nginx process) is using port 80.
+Solution: sudo netstat -tulpn | grep :80 && sudo kill -9  && sudo systemctl restart nginx
+
+Error Log: connect() failed (111: Connection refused) while connecting to upstream
+Explanation: Nginx cannot reach your backend application (e.g., Node, Python) on the specified port.
+Solution: Verify the backend app is running: sudo systemctl status my-backend-service
+
+Error Log: upstream timed out (110: Connection timed out) while reading response header
+Explanation: The backend application took too long to process the request.
+Solution: Increase proxy_read_timeout 300s; in your nginx.conf location block.
+
+Error Log: 502 Bad Gateway
+Explanation: Nginx acts as a proxy, but the upstream server returned an invalid response or is completely down.
+Solution: Check backend logs (e.g., pm2 logs or journalctl -u backend) and restart the backend.
+
+Error Log: 504 Gateway Timeout
+Explanation: The backend server is up but didn't respond within the timeout window.
+Solution: Optimize the backend database query or increase fastcgi_read_timeout 300s;
+
+File & Permission Errors
+
+Error Log: open() "/var/www/html/index.html" failed (13: Permission denied)
+Explanation: The Nginx worker process (usually www-data) lacks read permissions for the file.
+Solution: sudo chown -R www-data:www-data /var/www/html && sudo chmod -R 755 /var/www/html
+
+Error Log: open() "/path/to/file" failed (2: No such file or directory)
+Explanation: Nginx is looking for a file that does not exist at the requested URI.
+Solution: Check the root and alias directives in your server block to ensure the path is correct.
+
+Error Log: directory index of "/var/www/html/" is forbidden
+Explanation: No index.html file exists, and autoindex is disabled.
+Solution: Create an index.html file or add autoindex on; to your location block.
+
+Error Log: open() "/etc/nginx/nginx.conf" failed (13: Permission denied)
+Explanation: You are trying to start or test Nginx without root privileges.
+Solution: Always use sudo: sudo nginx -t or sudo systemctl restart nginx
+
+Error Log: Too many open files (24: Too many open files)
+Explanation: The OS limit for open file descriptors has been reached under heavy traffic.
+Solution: Increase worker_rlimit_nofile 65535; in nginx.conf and update /etc/security/limits.conf.
+
+Configuration & Syntax Errors
+
+Error Log: nginx: [emerg] unknown directive "xxx" in /etc/nginx/nginx.conf
+Explanation: You have a typo in your configuration file or are missing a required module.
+Solution: Fix the typo in the config file and verify with: sudo nginx -t
+
+Error Log: nginx: [emerg] "server" directive is not allowed here
+Explanation: A server { } block is placed outside of the http { } block.
+Solution: Move the server block inside the http { } block in nginx.conf.
+
+Error Log: nginx: [emerg] duplicate listen options for [::]:80
+Explanation: You have 'default_server' applied to port 80 in more than one server block.
+Solution: Ensure only one server block has 'listen 80 default_server;'
+
+Error Log: nginx: [emerg] could not build server_names_hash, you should increase...
+Explanation: You have too many server_name entries, or the names are too long.
+Solution: Add server_names_hash_bucket_size 64; to the http { } block.
+
+Error Log: invalid number of arguments in "proxy_pass" directive
+Explanation: The proxy_pass directive requires exactly one URL.
+Solution: Ensure the syntax is: proxy_pass http://127.0.0.1:3000;
+
+Client & Request Errors
+
+Error Log: 413 Request Entity Too Large
+Explanation: The user uploaded a file larger than Nginx's default 1MB limit.
+Solution: Add client_max_body_size 50M; to your server or location block.
+
+Error Log: client intended to send too large body
+Explanation: Same as 413 error; the payload exceeds client_max_body_size.
+Solution: Increase client_max_body_size in nginx.conf.
+
+Error Log: upstream sent too big header while reading response header from upstream
+Explanation: The backend application sent HTTP headers/cookies larger than Nginx's buffer.
+Solution: Increase proxy_buffer_size 16k; and proxy_buffers 4 16k;
+
+Error Log: 403 Forbidden
+Explanation: The client does not have access rights to the content.
+Solution: Check file permissions or check for 'deny all;' rules in the location block.
+
+Error Log: 405 Not Allowed
+Explanation: A POST request was sent to a static file (like .html) which only accepts GET.
+Solution: Ensure POST requests are proxied to a dynamic backend via proxy_pass.
+
+SSL & Security Errors
+
+Error Log: SSL_do_handshake() failed (SSL: error:...) while SSL handshaking
+Explanation: The client does not support the required SSL protocols or ciphers.
+Solution: Check ssl_protocols TLSv1.2 TLSv1.3; in nginx.conf.
+
+Error Log: cannot load certificate key "/etc/letsencrypt/.../privkey.pem"
+Explanation: Nginx cannot find the private key or the permissions are wrong.
+Solution: Verify the file path and ensure Nginx can read the SSL directory.
+
+Error Log: SSL certificate and key mismatch
+Explanation: The public certificate does not match the provided private key.
+Solution: Reissue the SSL certificate or ensure you are pointing to the correct key pair.
+
+Error Log: no "ssl_certificate" is defined in server listening on SSL port
+Explanation: You enabled 'listen 443 ssl;' but forgot to specify the cert paths.
+Solution: Add ssl_certificate and ssl_certificate_key directives.
+
+Error Log: the "ssl" directive is deprecated, use the "listen ... ssl" directive
+Explanation: You are using old Nginx syntax (ssl on;).
+Solution: Remove 'ssl on;' and change your listen directive to 'listen 443 ssl;'
+
+Routing & Worker Errors
+
+Error Log: rewrite or internal redirection cycle while processing "/"
+Explanation: You created an infinite loop using rewrite rules or try_files.
+Solution: Review your try_files and rewrite directives to ensure they hit a final destination.
+
+Error Log: worker_connections are not enough
+Explanation: The server is receiving more simultaneous connections than allowed.
+Solution: Increase worker_connections 1024; inside the events { } block.
+
+Error Log: no resolver defined to resolve example.com
+Explanation: You are using a variable in proxy_pass but haven't defined a DNS resolver.
+Solution: Add resolver 8.8.8.8; above your proxy_pass directive.
+
+Error Log: zero size shared memory zone "name"
+Explanation: You defined a limit_req_zone or proxy_cache_path but gave it 0 memory.
+Solution: Ensure size is specified, e.g., keys_zone=mylimit:10m
+
+Error Log: invalid PID number "" in "/run/nginx.pid"
+Explanation: The PID file is empty or corrupted, usually after a hard crash.
+Solution: Run sudo killall nginx and then sudo systemctl start nginx

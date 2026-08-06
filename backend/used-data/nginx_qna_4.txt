@@ -1,0 +1,44 @@
+Id:
+35701039
+
+Title:
+I am trying to install C compiler in RHEL6 without internet
+
+Body:
+<p>I have been trying to install basic softwares needed for making my linux machine into a development env. I got a machine with RHEL6, however it is not connected to the internet. I am able to connect to the lan and ssh to other machines. I tried to install using yum but failed with the following error.</p>
+
+<pre><code>[root@******* pcre-8.38]#yum install gcc-c++
+Loaded plugins: aliases, changelog, downloadonly, kabi, presto, product-id, refresh-packagekit, security, subscription-
+              : manager, tmprepo, verify, versionlock
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+Loading support for Red Hat kernel ABI
+https://www.softwarecollections.org/repos/rhscl/devtoolset-3/epel-6-x86_64/repodata/repomd.xml: [Errno 12] Timeout on https://www.softwarecollections.org/repos/rhscl/devtoolset-3/epel-6-x86_64/repodata/repomd.xml: (28, 'connect() timed out!')
+Trying other mirror.
+Error: Cannot retrieve repository metadata (repomd.xml) for repository: rhscl-devtoolset-3-epel-6-x86_64. Please verify its path and try again.
+</code></pre>
+
+<p>Prior to this i installed an ngnix web server and tried to do a <em>make</em> but that failed with:</p>
+
+<pre><code>...
+checking windows.h presence... no
+checking for windows.h... no
+configure: error: You need a C++ compiler for C++ support.
+make[1]: *** [/home/gunjaj/software/pcre-8.38/Makefile] Error 1
+make[1]: Leaving directory `/home/gunjaj/software/nginx-1.8.1'
+make: *** [build] Error 2
+</code></pre>
+
+<p>Any help is appreciated.</p>
+
+<p>PS: This question is similar to another question <a href="https://stackoverflow.com/questions/13853507/how-to-install-c-compiler-for-gcc-without-internet-connection-rhel6">How to install C compiler for GCC without Internet connection? (RHEL6)</a></p>
+
+<p>but i have absolutely no way of getting internet right now.</p>
+
+Tags:
+<c++><c><linux><nginx><rhel6>
+
+CreationDate:
+2016-02-29 13:39:20
+
+Y:
+LQ_CLOSE

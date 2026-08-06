@@ -1,0 +1,17 @@
+Id:
+34562730
+
+Title:
+Difference between uwsgi_pass and proxy_pass in Nginx?
+
+Body:
+<p>I'm running uWSGI behind Nginx and have been using <code>proxy_pass</code> to get Nginx to hit uWSGI. Is there any benefit to switch to <code>uwsgi_pass</code>. If so, what is it?</p>
+
+Tags:
+<nginx><uwsgi>
+
+CreationDate:
+2016-01-02 04:54:12
+
+Y:
+HQ

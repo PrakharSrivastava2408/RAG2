@@ -1,0 +1,83 @@
+Id:
+46031491
+
+Title:
+Nginx on Fedora 26: could not build optimal types_hash error message
+
+Body:
+<p>I've installed Fedora and Ngnix, added all the configuration files for my local development, when I started to see this error</p>
+
+<pre><code>nginx: [warn] could not build optimal types_hash, you should increase either types_hash_max_size: 2048 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+</code></pre>
+
+<p>I found solutions saying that I should add <code>types_hash_bucket_size</code> to <code>nginx.conf</code>, but I've added it, removed the default one, removed both and added both, it insists on showing this error.</p>
+
+<pre><code>http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile                            on;
+    tcp_nopush                          on;
+    tcp_nodelay                         on;
+    keepalive_timeout                   65;
+
+    # I tried leaving both, removing both and one of each. The error persists.
+    types_hash_max_size                2048;
+    server_names_hash_bucket_size      128;
+</code></pre>
+
+<p><code>types_hash_max_size</code> was there by default when I installed nginx, though.</p>
+
+<p>My files from <code>sites-enabled</code>:</p>
+
+<pre><code>server {
+  listen 80;
+  server_name devapi.hporder.com;
+
+  root /home/gabriel/Sites/hp-order-system/workspace/api;
+
+  client_max_body_size 10M;
+
+  location ~ ^/(images|javascript|js|css|flash|media|static)/  {
+    expires 30d;
+  }
+
+  location / {
+    index  index.php index.html index.htm;
+    try_files $uri $uri/ /index.php$is_args$args;
+  }
+
+  error_page   500 502 503 504  /50x.html;
+  location = /50x.html {
+    root   /usr/local/Cellar/nginx/1.10.1/html;
+  }
+
+  location ~ \.php$ {
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+    fastcgi_param FF_BOOTSTRAP_ENVIRONMENT dev;
+    fastcgi_param FF_BOOTSTRAP_CONFIG api/dev;
+    fastcgi_pass 127.0.0.1:9000;
+    fastcgi_index index.php;
+    # include /usr/local/etc/nginx/fastcgi.conf;
+
+    fastcgi_buffer_size 1024k;
+    fastcgi_buffers 1024 1024k;
+    fastcgi_busy_buffers_size 1024k;
+  }
+}
+</code></pre>
+
+Tags:
+<nginx><fedora>
+
+CreationDate:
+2017-09-04 06:35:46
+
+Y:
+HQ

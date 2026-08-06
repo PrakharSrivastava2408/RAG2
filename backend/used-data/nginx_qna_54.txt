@@ -1,0 +1,91 @@
+Id:
+53353572
+
+Title:
+"proxy_pass" cannot have URI part in location given by regular expression
+
+Body:
+<p>I've developed a URL shortening web application. </p>
+
+<p>It consists of two separate docker containers: one containing the backend REST api and another containing the frontend static website. </p>
+
+<p>These two containers are linked to an nginx container.
+The configuration for this nginx container is below:</p>
+
+<pre><code>worker_processes 1;
+
+events { worker_connections 1024; }
+
+http {
+    upstream api {
+        server short-url:8080;
+    }
+
+    upstream frontend {
+        server short-url-frontend:8081;
+    }
+
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 860;
+    gzip_proxied expired no-cache no-store private auth;
+    gzip_types text/plain text/css text/xml application/javascript application/x-javascript application/xml;
+    gzip_disable "MSIE [1-6]\.";
+
+    server {
+        listen 80;
+        root    /user/share/nginx/html;
+
+        location /urlshortener/v1 {
+            proxy_pass         http://api/urlshortener/v1;
+            proxy_redirect     off;
+            proxy_set_header   Host $host;
+            proxy_set_header   X-Real-IP $remote_addr;
+            proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Host $server_name;
+        }
+
+        location ~ ^/([A-Za-z0-9]+) {
+            rewrite ^/([A-Za-z0-9]+) /$1
+            proxy_pass         http://api/urlshortener/v1;
+        }
+
+        location / {
+            proxy_pass          http://frontend;
+            proxy_set_header    Host              $host;
+            proxy_set_header    X-Real-IP         $remote_addr;
+            proxy_set_header    X-Forwarded-for   $remote_addr;
+        }
+    }
+
+}
+</code></pre>
+
+<p>If a url ends with <code>/urlshortening/v1</code>, I'm proxying to the backend.</p>
+
+<p>If a url starts with <code>/</code>, I'm proxying to the frontend.</p>
+
+<p>Shortened urls e.g. <code>/3xTy</code> or <code>/a0q</code> need to be proxied to the backend so that the user can be navigated to the original url. In order to do this, I've defined a location with a regular expression.</p>
+
+<pre><code>location ~ ^/([A-Za-z0-9]+) {
+    rewrite ^/([A-Za-z0-9]+) /$1
+   proxy_pass         http://api/urlshortener/v1;
+}
+</code></pre>
+
+<p>This block of code gives me the following error:</p>
+
+<blockquote>
+  <p>2018/11/17 16:47:03 [emerg] 1#1: "proxy_pass" cannot have URI part in location given by regular expression, or inside named location, or inside "if" statement, or inside "limit_except" block in /etc/nginx/nginx.conf:36</p>
+</blockquote>
+
+<p>I've gone through several <a href="https://www.thegeekstuff.com/2017/05/nginx-location-examples/" rel="noreferrer">examples</a> and reviewed a number of <a href="https://serverfault.com/a/693951">answers</a> and I believe that the configuration I have should work. Can someone please explain why I'm getting this error?</p>
+
+Tags:
+<nginx>
+
+CreationDate:
+2018-11-17 17:14:00
+
+Y:
+HQ

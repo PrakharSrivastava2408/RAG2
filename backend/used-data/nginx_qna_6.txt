@@ -1,0 +1,34 @@
+Id:
+36933082
+
+Title:
+jenkins authentication fails with gitlab
+
+Body:
+Before to say my problem, i installed my **gitlab**(omnibus settting) and gitlab is connected external **nginx** server. And than now i am setting jenkins. 
+
+While i am making new jenkins item, when i select "Git" in "Source code management" i receive following message in the picture.[git selecting screen][1] 
+
+So i checked "error.log" in my external nginx. And then i found following error code. 
+
+**`[error] 20979#0: OCSP_basic_verify() failed (SSL: error:27069076:OCSP routines:OCSP_basic_verify:signer certificate not found) while requesting certificate status, responder: ocsp.int-x1.letsencrypt.org`**
+
+I also searched it on google and anywhere i know, but i still don't know how to solve this problem.
+
+thank you advance for your help.
+
+
+
+
+
+
+  [1]: http://i.stack.imgur.com/JGU72.png
+
+Tags:
+<ssl><nginx><jenkins><gitlab>
+
+CreationDate:
+2016-04-29 08:14:41
+
+Y:
+LQ_EDIT

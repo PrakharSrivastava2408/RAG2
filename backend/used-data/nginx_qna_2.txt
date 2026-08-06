@@ -1,0 +1,36 @@
+Id:
+34680836
+
+Title:
+NGINX configuration for Rails 5 ActionCable with puma
+
+Body:
+<p>I am using Jelastic for my development environment (not yet in production).
+My application is running with Unicorn but I discovered websockets with ActionCable and integrated it in my application.</p>
+
+<p>Everything is working fine in local, but when deploying to my Jelastic environment (with the default NGINX/Unicorn configuration), I am getting this message in my javascript console and I see nothing in my access log</p>
+
+<pre><code>WebSocket connection to 'ws://dev.myapp.com:8080/' failed: WebSocket is closed before the connection is established.
+</code></pre>
+
+<p>I used to have on my local environment and I solved it by adding the needed ActionCable.server.config.allowed_request_origins in my config file. So I double-checked my development config for this and it is ok.</p>
+
+<p>That's why I was wondering if there is something specific for NGINX config, else than what is explained on ActionCable git page </p>
+
+<pre><code>bundle exec puma -p 28080 cable/config.ru
+</code></pre>
+
+<p>For my application, I followed everything from <a href="https://github.com/rails/rails/tree/master/actioncable">enter link description here</a> but nothing's mentioned about NGINX configuration</p>
+
+<p>I know that websocket with ActionCable is quite new but I hope someone would be able to give me a lead on that</p>
+
+<p>Many thanks</p>
+
+Tags:
+<nginx><jelastic><ruby-on-rails-5><actioncable>
+
+CreationDate:
+2016-01-08 15:45:45
+
+Y:
+HQ

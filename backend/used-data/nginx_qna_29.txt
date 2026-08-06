@@ -1,0 +1,32 @@
+Id:
+42241514
+
+Title:
+Enable http2 on Nginx on Windows
+
+Body:
+<p>I am using <code>nginx</code> version <code>1.10.3</code> on windows 7. I want to enable <code>http2</code>. I have added the following in the config file:</p>
+
+<pre><code> server {
+    listen       443 http2 ssl proxy_protocol;
+}
+</code></pre>
+
+<p>When I start nginx server, I get the following error:</p>
+
+<pre><code>2017/02/15 14:34:33 [emerg] 8948#6892: the "http2" parameter requires 
+ngx_http_v2_module in C:\Develop\Application\nginx-1.10.3/conf/nginx.conf:64
+</code></pre>
+
+<p>Line number 64 is the same as the line specified above.</p>
+
+<p>How can I install <code>ngx_http_v2_module</code> on Windows?</p>
+
+Tags:
+<nginx><http2>
+
+CreationDate:
+2017-02-15 05:42:29
+
+Y:
+HQ

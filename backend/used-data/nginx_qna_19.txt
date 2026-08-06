@@ -1,0 +1,116 @@
+Id:
+40059745
+
+Title:
+NGINX: connect() to unix:/var/run/php7.0-fpm.sock failed (2: No such file or directory)
+
+Body:
+<p>I'm trying to follow <a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-a-basic-php-application-using-ansible-on-ubuntu-14-04" rel="noreferrer">this Ansible tutorial</a> while adjusting it for Ubuntu 16.04 with php7. Below this message you'll find my Ansible file. After running it and trying to visit the page in the browser I get a 404, and the following in the nginx error logs:</p>
+
+<blockquote>
+  <p>2016/10/15 13:13:20 [crit] 28771#28771: *7 connect() to
+  unix:/var/run/php7.0-fpm.sock failed (2: No such file or directory)
+  while connecting to upstream, client: 93.xxx.xxx.xx, server:
+  95.xx.xx.xx, request: "GET / HTTP/1.1", upstream: "fastcgi://unix:/var/run/php7.0-fpm.sock:", host: "95.xx.xx.xx"</p>
+</blockquote>
+
+<p>So I checked if the socket file exists, and it seems to exist, but <code>ls</code> behaves weird:</p>
+
+<pre><code>$ sudo ls -l /var/run/php
+total 4
+-rw-r--r-- 1 root     root     5 Oct 15 13:00 php7.0-fpm.pid
+srw-rw---- 1 www-data www-data 0 Oct 15 13:00 php7.0-fpm.sock
+$ sudo ls -l /var/run/php7
+ls: cannot access '/var/run/php7': No such file or directory
+$ sudo ls -l /var/run/php7.0-fpm.sock
+ls: cannot access '/var/run/php7.0-fpm.sock': No such file or directory
+</code></pre>
+
+<p>Why can <code>ls</code> find the socket file if I search it by part of the name <code>php</code> while it cannot find the socket file when I list more than that <code>php7</code> or even the full name <code>php7.0-fpm.sock</code>?</p>
+
+<p>And most importantly, how can I make this work with nginx? All tips are welcome!</p>
+
+<p>below I pasted my Ansible file</p>
+
+<pre><code>---
+- hosts: php
+  become: true
+
+  tasks:
+  - name: install packages
+    apt: name={{ item }} update_cache=yes state=latest
+    with_items:
+      - git
+      - mcrypt
+      - nginx
+      - php-cli
+      - php-curl
+      - php-fpm
+      - php-intl
+      - php-json
+      - php-mcrypt
+      - php-mbstring
+      - php-sqlite3
+      - php-xml
+      - sqlite3
+
+  - name: enable mbstring
+    shell: phpenmod mbstring
+    notify:
+      - restart php7.0-fpm
+      - restart nginx
+
+  - name: create /var/www/ directory
+    file: dest=/var/www/ state=directory owner=www-data group=www-data mode=0700
+
+  - name: Clone git repository
+    git: &gt;
+      dest=/var/www/laravel
+      repo=https://github.com/laravel/laravel.git
+      update=no
+    become: true
+    become_user: www-data
+    register: cloned
+
+  - name: install composer
+    shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    args:
+      creates: /usr/local/bin/composer
+
+  - name: composer create-project
+    composer: command=create-project working_dir=/var/www/laravel optimize_autoloader=no
+    become: true
+    become_user: www-data
+    when: cloned|changed
+
+  - name: set APP_DEBUG=false
+    lineinfile: dest=/var/www/laravel/.env regexp='^APP_DEBUG=' line=APP_DEBUG=false
+
+  - name: set APP_ENV=production
+    lineinfile: dest=/var/www/laravel/.env regexp='^APP_ENV=' line=APP_ENV=production
+
+  - name: Configure nginx
+    template: src=nginx.conf dest=/etc/nginx/sites-available/default
+    notify:
+      - restart php5-fpm
+      - restart nginx
+
+  handlers:
+    - name: restart php7.0-fpm
+      service: name=php7.0-fpm state=restarted
+
+    - name: restart nginx
+      service: name=nginx state=restarted
+
+    - name: reload nginx
+      service: name=nginx state=reloaded
+</code></pre>
+
+Tags:
+<php><linux><sockets><nginx><ansible>
+
+CreationDate:
+2016-10-15 13:42:41
+
+Y:
+HQ

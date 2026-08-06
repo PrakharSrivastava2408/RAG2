@@ -1,0 +1,26 @@
+Id:
+40810219
+
+Title:
+nginx 301 redirect with query string
+
+Body:
+<p>Currently I have something like this in my nginx.conf file:</p>
+
+<pre><code>location ~ /old/page/?$ {
+    return 301 /new-page;
+}
+</code></pre>
+
+<p>The issue is that query strings are being stripped from the /old/page?ref=xx URL.</p>
+
+<p>Is it possible to include query strings using the redirect method I'm using above?</p>
+
+Tags:
+<redirect><nginx>
+
+CreationDate:
+2016-11-25 17:46:09
+
+Y:
+HQ

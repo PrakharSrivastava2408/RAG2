@@ -1,0 +1,21 @@
+Id:
+38813399
+
+Title:
+Cache a static file in memory forever on Nginx?
+
+Body:
+<p>I have Nginx running in a Docker container, and it serves some static files. The files will <em>never</em> change at runtime - if they actually do change, the container will be stopped, the image will be rebuilt, and a new container will be started.</p>
+
+<p>So, to improve performance, it would be perfect if Nginx would read the static files only one single time from disk and then server it from memory forever. I have found some configuration options to configure caching, but at least from what I have seen none of them provided this "forever" behavior that I'm looking for.</p>
+
+<p>Is this possible at all? If so, how do I need to configure Nginx to achieve this?</p>
+
+Tags:
+<caching><nginx><static-content>
+
+CreationDate:
+2016-08-07 10:55:41
+
+Y:
+HQ

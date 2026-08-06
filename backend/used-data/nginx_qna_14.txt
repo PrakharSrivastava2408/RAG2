@@ -1,0 +1,21 @@
+Id:
+39156765
+
+Title:
+I have an error with Symfony
+
+Body:
+I have a similar configuration with other project, and It run good. But, this project get problem:
+
+    Fatal error: Uncaught UnexpectedValueException: The stream or file "/home/docker/test-project/var/logs/prod.log" could not be opened: failed to open stream: Permission denied in /home/docker/test-project/vendor/monolog/monolog/src/Monolog/Handler/StreamHandler.php:107 Stack trace: #0 /home/docker/test-project/vendor/monolog/monolog/src/Monolog/Handler/AbstractProcessingHandler.php(37): Monolog\Handler\StreamHandler->write(Array) #1 /home/docker/test-project/vendor/monolog/monolog/src/Monolog/Handler/FingersCrossedHandler.php(122): Monolog\Handler\AbstractProcessingHandler->handle(Array) #2 /home/docker/test-project/vendor/monolog/monolog/src/Monolog/Logger.php(336): Monolog\Handler\FingersCrossedHandler->handle(Array) #3 /home/docker/test-project/vendor/monolog/monolog/src/Monolog/Logger.php(643): Monolog\Logger->addRecord(500, 'Uncaught PHP Ex...', Array) #4 /home/docker/test-project/vendor/symfony/symfony/src/Symfony/Component/HttpKernel/EventListener/ExceptionListener.php(89): Monolog\Logger->critical('Uncaught PHP Ex. in /home/docker/test-project/vendor/monolog/monolog/src/Monolog/Handler/StreamHandler.php on line 107
+
+I tried: http://symfony.com/doc/current/setup/file_permissions.html and I don't get a good result
+
+Tags:
+<nginx><docker><symfony>
+
+CreationDate:
+2016-08-26 00:42:30
+
+Y:
+LQ_EDIT

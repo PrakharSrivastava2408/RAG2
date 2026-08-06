@@ -1,0 +1,55 @@
+Id:
+40516288
+
+Title:
+Webpack Dev Server with NGINX proxy_pass
+
+Body:
+<p>I'm trying to get <code>webpack-dev-server</code> running inside a Docker container then accessing it through a NGINX host. The initial <code>index.html</code> loads but the Web Sockets connection to the dev server cannot connect.</p>
+
+<blockquote>
+  <p>VM47:35 WebSocket connection to 'ws://example.com/sockjs-node/834/izehemiu/websocket' failed: Error during WebSocket handshake: Unexpected response code: 400</p>
+</blockquote>
+
+<p>I'm using the following config.</p>
+
+<pre><code>map $http_upgrade $connection_upgrade {
+  default upgrade;
+  ''      close;
+}
+
+upstream webpack_dev_server {
+  server node;
+}
+
+server {
+  server_name _;
+  listen 80;
+  root /webpack_dev_server;
+
+  location / {
+    proxy_pass http://webpack_dev_server;
+  }
+
+  location /sockjs-node/ {
+    proxy_pass http://webpack_dev_server/sockjs-node/;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $host;  # pass the host header - http://wiki.nginx.org/HttpProxyModule#proxy_pass
+
+    proxy_http_version 1.1;  # recommended with keepalive connections - http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_http_version
+
+    # WebSocket proxying - from http://nginx.org/en/docs/http/websocket.html
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+  }
+}
+</code></pre>
+
+Tags:
+<node.js><nginx><websocket><webpack><webpack-dev-server>
+
+CreationDate:
+2016-11-09 21:25:59
+
+Y:
+HQ

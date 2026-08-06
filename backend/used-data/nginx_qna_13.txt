@@ -1,0 +1,39 @@
+Id:
+38931468
+
+Title:
+Nginx reverse proxy error:14077438:SSL SSL_do_handshake() failed
+
+Body:
+<p>So i am using following settings to create one reverse proxy for site as below. </p>
+
+<pre><code>  server {
+     listen 80;
+     server_name mysite.com;
+     access_log  /var/log/nginx/access.log;
+     error_log  /var/log/nginx/error.log;
+     root /home/ubuntu/p3;
+   location / {
+     proxy_pass  https://mysiter.com/;
+     proxy_redirect  https://mysiter.com/ $host;
+     proxy_set_header Accept-Encoding "";
+    }
+  }
+</code></pre>
+
+<p>But getting BAD GATE WAY 502 error and below is the log.</p>
+
+<pre><code>2016/08/13 09:42:28 [error] 26809#0: *60 SSL_do_handshake() failed (SSL: error:14077438:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error) while SSL handshaking to upstream, client: 103.255.5.68, server: mysite.com, request: "GET / HTTP/1.1", upstream: "https://105.27.188.213:443/", host: "mysite.com"
+2016/08/13 09:42:28 [error] 26809#0: *60 SSL_do_handshake() failed (SSL: error:14077438:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error) while SSL handshaking to upstream, client: 103.255.5.68, server: mysite.com, request: "GET / HTTP/1.1", upstream: "https://105.27.188.213:443/", host: "mysite.com"
+</code></pre>
+
+<p>Any help will be greatly appreciated. </p>
+
+Tags:
+<ssl><nginx><proxy><reverse-proxy>
+
+CreationDate:
+2016-08-13 09:50:09
+
+Y:
+HQ

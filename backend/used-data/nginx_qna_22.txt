@@ -1,0 +1,19 @@
+Id:
+40636691
+
+Title:
+HTTP2 support in MAMP Pro
+
+Body:
+<p>Is there any way to enable HTTP2 support in MAMP Pro? I want to test and improve some of my local development websites with HTTP2 support.</p>
+
+<p>I've been searching for a while now, but haven't found a single solution.</p>
+
+Tags:
+<apache><nginx><mamp><http2><mamp-pro>
+
+CreationDate:
+2016-11-16 16:02:11
+
+Y:
+HQ

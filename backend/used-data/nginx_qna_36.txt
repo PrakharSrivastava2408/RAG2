@@ -1,0 +1,17 @@
+Id:
+44994275
+
+Title:
+How to create real time chat in mobile apps with attachment image/videos in socket io? The backend framework is rails,nginx,unicorn
+
+Body:
+<p>I have a mobile chat application that need to be real time and it has an attachment videos/images.The back end framework I have used is rails4 with nginx and unicorn. Anybody can help me or can give some examples to create a server and client in mobile and rails integration with socket io. Thank you.</p>
+
+Tags:
+<ruby-on-rails><nginx><socket.io><real-time>
+
+CreationDate:
+2017-07-09 07:58:16
+
+Y:
+LQ_CLOSE

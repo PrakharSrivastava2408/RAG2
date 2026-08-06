@@ -1,0 +1,23 @@
+Id:
+38031745
+
+Title:
+How to migrate from HTTP/1.1 to HTTP/2 from SEO point of view?
+
+Body:
+<p>I'm aware that HTTP/2 is using only <code>https</code>.</p>
+
+<p>My existing implementation are all HTTP/1.1 with <code>http</code> protocol for all the urls on the website.</p>
+
+<p>To add HTTP/2 support, without change the html source code, I plan to redirect all <code>http</code> requests to <code>https</code> on the nginx server block level.</p>
+
+<p>With this approach, is there any drawback/impact on search engine indexing and bot crawling?</p>
+
+Tags:
+<nginx><https><seo><bots><http2>
+
+CreationDate:
+2016-06-25 18:37:00
+
+Y:
+LQ_CLOSE

@@ -1,0 +1,17 @@
+Id:
+44752831
+
+Title:
+How to build nginx test envirnment?
+
+Body:
+I'm a beginner of nginx. I wonder how to build nginx test envirnment~? How do you know your nginx configuration is workable or non-workable?
+
+Tags:
+<linux><nginx>
+
+CreationDate:
+2017-06-26 03:39:37
+
+Y:
+LQ_EDIT

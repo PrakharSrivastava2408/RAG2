@@ -1,0 +1,31 @@
+Id:
+57138498
+
+Title:
+How to find where nginx installs?
+
+Body:
+<p>Sorry for that I am not familiar with linux.
+I tried to search the answer and tried this command:</p>
+
+<pre><code>ps aux | grep nginx
+</code></pre>
+
+<p>But I only get the result like this:</p>
+
+<pre><code>nginx: master process ./sbin/nginx
+</code></pre>
+
+<p>I got confused because as far as I know, dot means current directory where I execute linux command.</p>
+
+<p>But I can not find sbin/nginx from current folder.
+So where I can find nginx and where is the configuration it actually works.</p>
+
+Tags:
+<linux><nginx>
+
+CreationDate:
+2019-07-22 02:27:36
+
+Y:
+LQ_CLOSE

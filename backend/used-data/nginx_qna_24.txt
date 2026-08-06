@@ -1,0 +1,24 @@
+Id:
+41303885
+
+Title:
+Nginx - Do I really need sites-available and sites-enabled folders?
+
+Body:
+<p>I have searched Stack Overflow for a straight answer but have not found it. I noticed my install of nginx has three folders called</p>
+
+<pre><code>etc/nginx/sites-available
+etc/nginx/sites-enabled
+etc/nginx/conf.d
+</code></pre>
+
+<p>Do I really need these if I just want to work directly in the <code>etc/nginx/nginx.conf</code> file and remove the <code>include</code> lines that include these items in <code>nginx.conf</code>? Are these directories used for anything else that would mess things up if I delete them?</p>
+
+Tags:
+<nginx>
+
+CreationDate:
+2016-12-23 15:17:22
+
+Y:
+HQ

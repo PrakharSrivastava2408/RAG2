@@ -1,0 +1,43 @@
+Id:
+48126517
+
+Title:
+Serve multiple Angular apps from the same server with Nginx
+
+Body:
+<p>I'm serving multiple <code>angular</code> apps from the same <code>server</code> block in <code>Nginx</code>. So in order to let the user browse directly to certain custom <code>Angular</code> routes I've declared without having to go through the home page (and avoid the 404 page), I'm forwarding these routes from nginx to each angular app's <code>index.html</code>, I've added a <code>try_files</code> to each <code>location</code>:</p>
+
+<pre><code>server {
+    listen 80;
+    server_name website.com;
+
+    # project1
+    location / {
+        alias /home/hakim/project1/dist/;
+        try_files $uri /index.html;
+    }
+
+    # project2
+    location /project2/ {
+        alias /home/hakim/project2/dist/;
+        try_files $uri /index.html;
+    }
+
+    # project3
+    location /project3/ {
+        alias /home/hakim/project3/dist/;
+        try_files $uri /index.html;
+    }
+}
+</code></pre>
+
+<p>This solution avoids the 404 error when going to an Angular route, but the problem is that when I browse to <code>/project2/</code> or <code>/project3/</code> it redirects to the <code>/project1/</code>. That's obviously not what is expected, since I want to have each location to forward to the <code>/project-i/index.html</code> of the adequate project.</p>
+
+Tags:
+<angular><nginx><routes>
+
+CreationDate:
+2018-01-06 10:41:32
+
+Y:
+HQ

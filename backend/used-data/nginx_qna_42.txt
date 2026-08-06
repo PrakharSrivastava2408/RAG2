@@ -1,0 +1,99 @@
+Id:
+47846521
+
+Title:
+I continuously receive `Invalid HTTP_HOST header` error email after I upgrade my django site from http to https
+
+Body:
+<p>Recently, I upgrade one of my django sites from http to https. However, after that, I continuously receive <code>Invalid HTTP_HOST header</code> error email while before I never received such type of emails.</p>
+
+<p>Here are some log messages:</p>
+
+<blockquote>
+  <p>[Django] ERROR (EXTERNAL IP): Invalid HTTP_HOST header: '123.56.221.107'. You may need to add '123.56.221.107' to ALLOWED_HOSTS.</p>
+  
+  <hr>
+  
+  <p>[Django] ERROR (EXTERNAL IP): Invalid HTTP_HOST header: 'www.sgsrec.com'. You may need to add 'www.sgsrec.com' to ALLOWED_HOSTS.</p>
+  
+  <hr>
+  
+  <p>[Django] ERROR (EXTERNAL IP): Invalid HTTP_HOST header: 'sgsrec.com'. You may need to add 'sgsrec.com' to ALLOWED_HOSTS.</p>
+  
+  <p>Report at /apple-app-site-association Invalid HTTP_HOST header: ‘sgsrec.com’. You may need to add ‘sgsrec.com’ to ALLOWED_HOSTS.</p>
+  
+  <hr>
+  
+  <p>Invalid HTTP_HOST header: ‘www.pythonzh.cn’. You may need to add ‘www.pythonzh.cn’ to ALLOWED_HOSTS.</p>
+  
+  <p>Report at / Invalid HTTP_HOST header: ‘www.pythonzh.cn’. You may need to add ‘www.pythonzh.cn’ to ALLOWED_HOSTS.</p>
+  
+  <p>Request Method: GET Request URL: <a href="http://www.pythonzh.cn/" rel="noreferrer">http://www.pythonzh.cn/</a> Django Version: 1.10.6</p>
+  
+  <hr>
+  
+  <p>[Django] ERROR (EXTERNAL IP): Invalid HTTP_HOST header: 'pythonzh.cn'. You may need to add 'pythonzh.cn' to ALLOWED_HOSTS.</p>
+</blockquote>
+
+<p><strong>What the strange thing is that I only change my blog site <code>www.zmrenwu.com</code> nginx configuration, but seems all of my sites which hosted on 123.56.221.107 are effected.</strong></p>
+
+<p>Of cause, I set ALLOWED_HOSTS correctly:</p>
+
+<pre><code>ALLOWED_HOSTS = ['.zmrenwu.com']
+ALLOWED_HOSTS = ['.sgsrec.com']
+ALLOWED_HOSTS = ['.pythonzh.cn']
+</code></pre>
+
+<p>Nginx configuration of my blog site <code>www.zmrenwu.com</code>:</p>
+
+<pre><code>server {
+    charset utf-8;
+    server_name zmrenwu.com www.zmrenwu.com;
+    listen 80;
+    return 301 https://www.zmrenwu.com$request_uri;
+}
+
+server {
+    charset utf-8;
+    server_name zmrenwu.com;
+    listen 443;
+
+    ssl on;
+    ssl_certificate /etc/ssl/1_www.zmrenwu.com_bundle.crt;
+    ssl_certificate_key /etc/ssl/2_www.zmrenwu.com.key;
+
+    return 301 https://www.zmrenwu.com$request_uri;
+}
+
+server {
+    charset utf-8;
+    listen 443;
+    server_name www.zmrenwu.com;
+
+    ssl on;
+    ssl_certificate /etc/ssl/1_www.zmrenwu.com_bundle.crt;
+    ssl_certificate_key /etc/ssl/2_www.zmrenwu.com.key;
+
+    location /static  {
+        alias /home/yangxg/sites/zmrenwu.com/blogproject/static;
+    }
+
+    location /media {
+        alias /home/yangxg/sites/zmrenwu.com/blogproject/media;
+    }
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_pass http://unix:/tmp/zmrenwu.com.socket;
+</code></pre>
+
+<p>Why that happened? And How could I solve this issue?</p>
+
+Tags:
+<python><django><http><nginx><https>
+
+CreationDate:
+2017-12-16 14:09:35
+
+Y:
+HQ

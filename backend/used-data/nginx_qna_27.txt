@@ -1,0 +1,32 @@
+Id:
+42083611
+
+Title:
+How to make nginx print full log for tcp stream
+
+Body:
+<p>I'm using nginx-1.11.8 with the following configuration.</p>
+
+<pre><code>stream {
+
+    log_format  basic   '$time_iso8601 $remote_addr '
+                        '$protocol $status $bytes_sent $bytes_received '
+                        '$session_time $upstream_addr '
+                        '"$upstream_bytes_sent" "$upstream_bytes_received" "$upstream_connect_time"';
+
+    access_log      logs/stream.log  basic buffer=1k flush=5s;
+
+    include *.stream.conf;
+}
+</code></pre>
+
+<p>Now I can only get IP and other unimportant stuff in the tcp log. There are some important information related to the IP in the tcp data packet that I want to know. What should I do to get the full tcp packet in the tcp log? Thanks in advance.</p>
+
+Tags:
+<logging><nginx><tcp><stream>
+
+CreationDate:
+2017-02-07 06:58:57
+
+Y:
+HQ

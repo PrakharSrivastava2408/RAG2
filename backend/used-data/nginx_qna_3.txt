@@ -1,0 +1,65 @@
+Id:
+35540159
+
+Title:
+Nginx : SSL_CTX_use_PrivateKey_file (..) failed
+
+Body:
+<p>I self generated 2 self-signed certificates with openssl for testing purposes using :</p>
+
+<pre><code>    $ sudo openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=FR/ST=Charente/L=Mornac/O=Office/CN=api.cockpit.yves" -keyout /usr/local/etc/nginx/ssl/api.cockpit.yves.key -out /usr/local/etc/nginx/ssl/api.cockpit.yves.crt
+    Generating a 4096 bit RSA private key
+    ..........................................................................++
+    ...................++
+    writing new private key to '/usr/local/etc/nginx/ssl/api.cockpit.yves.key'
+    -----
+    $ sudo openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=FR/ST=Charente/L=Mornac/O=Office/CN=admin.cockpit.yves" -keyout /usr/local/etc/nginx/ssl/admin.cockpit.yves.key -out /usr/local/etc/nginx/ssl/admin.cockpit.yves.crt
+    Generating a 4096 bit RSA private key
+    ..................................................................................................................................................++
+    ..............................++
+    writing new private key to '/usr/local/etc/nginx/ssl/admin.cockpit.yves.key'
+    -----
+</code></pre>
+
+<p>and in my nginx.conf file , I set up the Https servers with :</p>
+
+<pre><code>server {
+    listen       8444 ssl;
+
+    server_name  admin.cockpit.yves;
+
+    ssl_certificate  ssl/admin.cockpit.yves.crt;
+    ssl_certificate_key ssl/admin.cockpit.yves.crt;
+    ...
+}
+
+server {
+    listen       8445 ssl;
+
+    server_name  api.cockpit.yves;
+
+    ssl_certificate  ssl/api.cockpit.yves.crt;
+    ssl_certificate_key ssl/api.cockpit.yves.crt;
+    ...
+}
+</code></pre>
+
+<p>however testing the nginx config, I get the following error :</p>
+
+<pre><code>    sudo nginx -t
+    nginx: [emerg] SSL_CTX_use_PrivateKey_file("/usr/local/etc/nginx/ssl/admin.cockpit.yves.crt") failed (SSL: error:0906D06C:PEM routines:PEM_read_bio:no start line:Expecting: ANY PRIVATE KEY error:140B0009:SSL routines:SSL_CTX_use_PrivateKey_file:PEM lib)
+    nginx: configuration file /usr/local/etc/nginx/nginx.conf test failed
+</code></pre>
+
+<p>what could be wrong ?  is it because I try to setup 2 certificates for 2 different subdomains  (admin. and api. ) for the same domain cockpit.yves ?</p>
+
+<p>thanks for your feedback</p>
+
+Tags:
+<ssl><nginx><ssl-certificate>
+
+CreationDate:
+2016-02-21 18:30:15
+
+Y:
+HQ

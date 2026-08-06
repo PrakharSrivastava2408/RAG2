@@ -1,0 +1,36 @@
+Id:
+46900163
+
+Title:
+nginx v1.10.2 Passenger 403
+
+Body:
+Multiple virtual hosts on my workstation, just stopped working.  Upon an update of `nginx` to v1.10.2 and a new `Passenger` `locations.ini` file pointer in the `nginx.conf` file, I'm getting `403 Forbidden` permissions errors on all of these vhosts.  No clue what to look at.
+
+    passenger_root /usr/local/opt/passenger/libexec/src/ruby_supportlib/phusion_passenger/locations.ini;
+    passenger_ruby /usr/bin/ruby;
+
+But, `which ruby`:
+
+    /Users/rich/.rbenv/shims/ruby
+
+So I changed that directive to the one above.  Restart `nginx`, and still the same.  The error reported:
+
+    2017/10/23 19:51:36 [error] 10863#0: *61 directory index of "/Library/WebServer/Documents/HQ/public/" is forbidden, client: 127.0.0.1, server: hq.local, request: "GET / HTTP/1.1", host: "hq.local"
+
+Permissions haven't changed ever.  Not to mention they are relaxed (only seen by me):
+
+    drwxrwxrwx  20 rich  admin   680B Jun 17 01:52 HQ
+    cd HQ:
+    drwxr-xr-x   8 rich  admin   272B Jul 12 17:32 public
+
+Odd stuff.  Any ideas appreciated how to get all this serving again properly.  It seems permissions were completely thrown off, and I'm not sure if it was the `nginx` update or not.  Cheers
+
+Tags:
+<ssl><nginx><homebrew><passenger>
+
+CreationDate:
+2017-10-23 23:54:58
+
+Y:
+LQ_EDIT

@@ -1,0 +1,21 @@
+Id:
+43555282
+
+Title:
+react.js application showing 404 not found in nginx server
+
+Body:
+<p>I uploaded react.js application to server. I'm using nginx server. Application is working fine. But when I go to other page &amp; refresh, site is not working. It's showing 404 Not found error.</p>
+
+<p>How can I solve this.</p>
+
+<p>Thank You.</p>
+
+Tags:
+<reactjs><nginx>
+
+CreationDate:
+2017-04-22 04:37:10
+
+Y:
+HQ

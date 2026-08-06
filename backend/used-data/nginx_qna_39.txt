@@ -1,0 +1,25 @@
+Id:
+46332919
+
+Title:
+Combining PHP-fpm with nginx in one dockerfile
+
+Body:
+<p>I have a need to combine the php-fpm with nginx in one dockerfile for production deployment. </p>
+
+<p>So is it better to :</p>
+
+<p>(1) Start the dockerfile using php:7.1.8-fpm  and then install nginx image layer on top of it ? </p>
+
+<p>(2) Or do you recommend using nginx image and then installing php-fpm using apt-get ?</p>
+
+<p>PS: I do not have a docker-compose build option for production deployment. On my development environment, I already use docker-compose and build multi-container app easily from two images. Our organization devops do not support docker-compose based deployment for prod environment.</p>
+
+Tags:
+<php><docker><nginx><dockerfile><fpm>
+
+CreationDate:
+2017-09-20 22:57:20
+
+Y:
+HQ

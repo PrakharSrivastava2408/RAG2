@@ -1,0 +1,68 @@
+Id:
+39769963
+
+Title:
+NGINX - Reverse proxy multiple API on different ports
+
+Body:
+<p>I have the following API(s):</p>
+
+<ol>
+<li>localhost:300/api/customers/ </li>
+<li>localhost:400/api/customers/:id/billing</li>
+<li>localhost:500/api/orders</li>
+</ol>
+
+<p>I'd like to use NGINX to have them all run under the following location:</p>
+
+<p>localhost:443/api/</p>
+
+<p>This seems very difficult because of customers spanning two servers.</p>
+
+<p>Here's my failed attempt starting with orders</p>
+
+<pre><code>server {
+    listen 443;
+    server_name localhost;
+
+    location /api/orders {
+            proxy_pass https://localhost:500/api/orders;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $remote_addr;
+    }
+}
+
+
+server {
+    listen 443;
+    server_name localhost;
+
+    location /api/customers/$id/billing {
+            proxy_pass https://localhost:400/api/customers/$id/billing;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $remote_addr;
+    }
+}
+
+server {
+    listen 443;
+    server_name localhost;
+
+    location /api/customers {
+            proxy_pass https://localhost:300/api/customers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $remote_addr;
+    }
+}
+</code></pre>
+
+<p>Anything jump out as far as a fix? Thanks!</p>
+
+Tags:
+<api><nginx><port><reverse-proxy>
+
+CreationDate:
+2016-09-29 12:10:29
+
+Y:
+HQ

@@ -1,0 +1,48 @@
+Id:
+38302492
+
+Title:
+How to get systemd to restart Rails App with Puma
+
+Body:
+<p>I've been struggling with this a week now and really can't seem to find an answer. I've deployed my Rails App with Capistrano. I use Puma as a server.</p>
+
+<p>When I deploy, everything works ok. The problem is to get Puma to start at reboot and/or when it crashes.</p>
+
+<p>To get the deployment setup, I've used this <a href="https://www.digitalocean.com/community/tutorials/deploying-a-rails-app-on-ubuntu-14-04-with-capistrano-nginx-and-puma" rel="noreferrer">tutorial</a>. I'm also using RVM. The problem I seem to get is to get the service to start Puma. Here's what I've used (service file):</p>
+
+<pre><code>[Unit]
+Description=Puma HTTP Server
+After=network.target
+
+[Service]
+Type=simple
+
+#User=my-user
+
+WorkingDirectory=/home/my-user/apps/MyApp/current
+
+ExecStart=/home/my-user/apps/MyApp/current/sbin/puma -C /home/my-user/apps/MyApp/shared/puma.rb
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+<p>That doesn't work. I was starting to think the problem was Ruby not being installed for all users, so I've installed RVM for all users and still get the same problem. My server has only root and my-user. </p>
+
+<p>Looking at how Capistrano deploys, the command it runs is: <code>cd /home/my-user/apps/MyApp/current &amp;&amp; ( RACK_ENV=production /home/my-user/.rvm/bin/rvm default do bundle exec puma -C /home/my-user/apps/MyApp/shared/puma.rb --daemon )</code>. If I use the aforementioned command, I get an error from Systmd complaining about missing parameters. So I've written a script with it and got the service file to call this script to start the app. </p>
+
+<p>That doesn't work either. Note that if I call the script from anywhere on the server the script does start the App, so its an issue on configuring Systemd, but I can't figure out what's wrong and I'm not sure how to debug it. I've seen the debug page on System's website, but it didn't help me. If I run <code>systemctl status puma.service</code> all it tells me is that the service is in failed state, but it doesn't tell me how or why.</p>
+
+<p>Also worth noting: If I run <code>bundle exec puma -C /home/my-user/apps/MyApp/shared/puma.rb</code> from my App folder it works ok, so how I could duplicate this command with Systemd service?</p>
+
+Tags:
+<ruby-on-rails><linux><nginx><puma><systemd>
+
+CreationDate:
+2016-07-11 08:36:08
+
+Y:
+HQ

@@ -1,0 +1,35 @@
+Id:
+48708361
+
+Title:
+NGINX $request_uri vs $uri
+
+Body:
+<p>How do you determine when to use <code>$request_uri</code> vs <code>$uri</code>?</p>
+
+<p>According to NGINX documentation, <code>$request_uri</code> is the original request (for example, <code>/foo/bar.php?arg=baz</code> includes arguments and can't be modified) but <code>$uri</code> refers to the altered URI.</p>
+
+<p>If the URI doesn't change, does $uri = $request_uri?</p>
+
+<p>Would it be incorrect or better or worse to use:</p>
+
+<pre><code>map $uri $new_uri {
+  # do something
+}
+</code></pre>
+
+<p>vs</p>
+
+<pre><code>map $request_uri $new_uri {
+  # do something
+}
+</code></pre>
+
+Tags:
+<nginx><uri>
+
+CreationDate:
+2018-02-09 14:46:58
+
+Y:
+HQ

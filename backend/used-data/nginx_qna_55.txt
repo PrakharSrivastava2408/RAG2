@@ -1,0 +1,25 @@
+Id:
+54317470
+
+Title:
+How to return server not found for domain but allow sub directory to show normally
+
+Body:
+<p>Most all are typically find a way to "not" show can't connect to server browser errors, where is I'm interested in showing it.</p>
+
+<p>I have a domain example.com for a YOURLS link shortener. The homepage shows a 403 Forbidden Nginx notice. The example.com/admin shows the working admin site. This will not be publicly facing and if someone goes to example.com should show can't connect to server, so people do not know that site exists (yes, they can do a whois or dns lookup but not worried about that).</p>
+
+<p>I could change the nginx server root to be a random location and it would show the desired error but then example.com/admin wouldn't work. Is there any easy fix? In the nginx config there is a line: <code>try_files $uri $uri/ /yourls-loader.php$is_args$args;</code></p>
+
+<p>Is there a change I can make there to stop example.com from showing anything but allow example.com/admin to still work? Also yes, I could put a blank index.html but that would show a white page where is looking to show the standard browser error you see if you enter a domain that doesn't have a website.</p>
+
+<p>There maybe a name for this, but not sure how to describe it thus have beemn unable to find a solution to this presumably easy problem.</p>
+
+Tags:
+<ubuntu><nginx><ubuntu-18.04>
+
+CreationDate:
+2019-01-22 22:37:00
+
+Y:
+LQ_CLOSE

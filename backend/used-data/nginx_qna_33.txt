@@ -1,0 +1,17 @@
+Id:
+44334125
+
+Title:
+.net Core on Windows vs Linux
+
+Body:
+<p>ASP.Net Core runs on both Windows and Linux Docker containers. Considering Linux hosts are cheaper than Windows hosts, what is the benefit of running your app on IIS/Windows vs Nginx/Linux if one doesn't require the full .Net framework?</p>
+
+Tags:
+<asp.net><iis><nginx><.net-core>
+
+CreationDate:
+2017-06-02 17:07:04
+
+Y:
+HQ

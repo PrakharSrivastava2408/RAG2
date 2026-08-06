@@ -1,0 +1,29 @@
+Id:
+48300288
+
+Title:
+SignalR in ASP.NET Core behind Nginx
+
+Body:
+<p>I have a server with ubuntu 16.04, kestrel and nginx as a proxy server that redirects to localhost where my app is. And my app is on Asp.Net Core 2. I'm trying to add push notifications and using SignalR core. On localhost everything is working well, and on a free hosting with iis and windows as well. But when I deploy my app on the linux server I have an error:</p>
+
+<blockquote>
+  <p>signalr-clientES5-1.0.0-alpha2-final.min.js?v=kyX7znyB8Ce8zvId4sE1UkSsjqo9gtcsZb9yeE7Ha10:1
+  WebSocket connection to
+  'ws://devportal.vrweartek.com/chat?id=210fc7b3-e880-4d0e-b2d1-a37a9a982c33'
+  failed: Error during WebSocket handshake: Unexpected response code:
+  204</p>
+</blockquote>
+
+<p>But this error occurs only if I request my site from different machine via my site name. And when I request the site from the server via localhost:port everything is fine. So I think there is a problem in nginx. I <a href="https://www.nginx.com/blog/websocket-nginx/" rel="noreferrer">read</a> that I need to configure it for working with websockets which are used in signalr for establishing connection but I wasn't succeed. May be there is just some dumb mistake?</p>
+
+<p><a href="https://i.stack.imgur.com/jkKvR.jpg" rel="noreferrer"><img src="https://i.stack.imgur.com/jkKvR.jpg" alt="enter image description here"></a></p>
+
+Tags:
+<nginx><asp.net-core><signalr>
+
+CreationDate:
+2018-01-17 11:39:55
+
+Y:
+HQ

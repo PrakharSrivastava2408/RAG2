@@ -1,0 +1,81 @@
+Id:
+40243633
+
+Title:
+Disable nginx cache for JavaScript files
+
+Body:
+<p>Ok, I'm almost giving up on this, but how can I disable the caching from Nginx for JavaScript files? I'm using a docker container with Nginx. When I now change something in the JavaScript file, I need multiple reloads until the new file is there.</p>
+
+<p>How do I know it's Nginx and not the browser/docker?</p>
+
+<p>Browser: I used <code>curl</code> on the command line to simulate the request and had the same issues. Also, I'm using a <code>CacheKiller</code> plugin and have cache disabled in Chrome Dev Tools.</p>
+
+<p>Docker: When I connect to the container's bash, and use <code>cat</code> after changing the file, I get the correct result immediately.</p>
+
+<p>I changed my <code>nginx.conf</code> for the <code>sites-enabled</code> to this (which I found in another stackoverflow thread)</p>
+
+<pre><code>location ~* ^.+\.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|pdf|txt|tar|wav|bmp|rtf|js|flv|swf|xml|html|htm)$ {
+    # clear all access_log directives for the current level
+    access_log off;
+    add_header Cache-Control no-cache;
+    # set the Expires header to 31 December 2037 23:59:59 GMT, and the Cache-Control max-age to 10 years
+    expires 1s;
+}
+</code></pre>
+
+<p>However, after rebuilding the containers (and making sure it's in the container with <code>cat</code>), it still didn't work. This here is the complete <code>.conf</code></p>
+
+<pre><code>server {
+    server_name app;
+    root /var/www/app/web;
+
+    # Redirect to blog
+    location ~* ^/blog {
+        proxy_set_header Accept-Encoding "";
+        sub_filter 'https://testproject.wordpress.com/' '/blog/';
+        sub_filter_once off;
+        rewrite ^/blog/(.*) /$1 break;
+        rewrite ^/blog / break;
+        proxy_pass     https://testproject.wordpress.com;
+    }
+
+    # Serve index.html only for exact root URL
+    location / {
+        try_files $uri /app_dev.php$is_args$args;
+    }
+
+    location ~ ^/(app|app_dev|config)\.php(/|$) {
+        fastcgi_pass php-upstream;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param HTTPS off;
+        # Prevents URIs that include the front controller. This will 404:
+        # http://domain.tld/app_dev.php/some-path
+        # Remove the internal directive to allow URIs like this
+        internal;
+    }
+
+    location ~* ^.+\.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|pdf|txt|tar|wav|bmp|rtf|js|flv|swf|xml|html|htm)$ {
+        # clear all access_log directives for the current level
+        access_log off;
+        add_header Cache-Control no-cache;
+        # set the Expires header to 31 December 2037 23:59:59 GMT, and the Cache-Control max-age to 10 years
+        expires 1s;
+    }
+
+
+    error_log /var/log/nginx/app_error.log;
+    access_log /var/log/nginx/app_access.log;
+}
+</code></pre>
+
+Tags:
+<javascript><caching><nginx>
+
+CreationDate:
+2016-10-25 15:13:46
+
+Y:
+HQ

@@ -1,0 +1,58 @@
+Id:
+42228191
+
+Title:
+Nginx: Redirect non-www to www https
+
+Body:
+<p>I have my below nginx config, I'm trying to redirect everything to <a href="https://www" rel="noreferrer">https://www</a> regardless of what comes in for example <a href="http://example.com" rel="noreferrer">http://example.com</a>, <a href="http://www.example.com" rel="noreferrer">http://www.example.com</a> or <a href="https://example.com" rel="noreferrer">https://example.com</a>.</p>
+
+<p>I've looked at numerous topics on SO and tried a couple of things but still stumped, I can't ever get <a href="https://example.com" rel="noreferrer">https://example.com</a> to redirect to the <a href="https://www" rel="noreferrer">https://www</a> pattern!?</p>
+
+<pre><code>server {
+    listen          80;
+    listen          443 ssl;
+    server_name     example.com;
+    return          301 https://www.example.com$request_uri;
+}
+
+server {
+    listen       443 ssl;
+
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+    ssl_dhparam /etc/nginx/ssl/dhparams.pem;
+    ssl_session_timeout 30m;
+    ssl_session_cache shared:SSL:10m;
+    ssl_buffer_size 8k;
+    add_header Strict-Transport-Security max-age=31536000;
+
+    root         /usr/share/nginx/html;
+
+    # Load configuration files for the default server block.
+    include /etc/nginx/default.d/*.conf;
+
+    location / {
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+    }
+}
+</code></pre>
+
+Tags:
+<nginx>
+
+CreationDate:
+2017-02-14 14:02:45
+
+Y:
+HQ

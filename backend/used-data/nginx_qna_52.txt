@@ -1,0 +1,62 @@
+Id:
+50321883
+
+Title:
+Phusion Passenger process stuck on (forking...) Rails
+
+Body:
+<p>Today I updated to the newest updated package for Nginx and Passenger. After the update, my app now has a (forking...) process that wasn't there before and doesn't seem to go away. Yet it is taking up memory and <code>sudo /usr/sbin/passenger-memory-stats</code> reports the following.</p>
+
+<pre><code>--------- Nginx processes ----------
+PID   PPID  VMSize    Private  Name
+------------------------------------
+1338  1     186.0 MB  0.8 MB   nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+1345  1338  186.3 MB  1.1 MB   nginx: worker process
+### Processes: 2
+### Total private dirty RSS: 1.91 MB
+
+
+---- Passenger processes -----
+PID   VMSize    Private  Name
+------------------------------
+1312  378.8 MB  2.1 MB   Passenger watchdog
+1320  663.8 MB  4.2 MB   Passenger core
+1768  211.5 MB  29.0 MB  Passenger AppPreloader: /home/ubuntu/my-app
+1987  344.1 MB  52.2 MB  Passenger AppPreloader: /home/ubuntu/my-app (forking...)
+2008  344.2 MB  41.1 MB  Passenger AppPreloader: /home/ubuntu/my-app (forking...)
+### Processes: 5
+### Total private dirty RSS: 128.62 MB
+</code></pre>
+
+<p>I have the <code>passenger_max_pool_size 2</code>. <code>sudo /usr/sbin/passenger-status</code> reports that two are currently open. The server is receiving no hits at the moment besides me using the site.</p>
+
+<pre><code>Version : 5.3.0
+Date    : 2018-05-14 00:41:05 +0000
+Instance: ql2TTnkw (nginx/1.14.0 Phusion_Passenger/5.3.0)
+
+----------- General information -----------
+Max pool size : 2
+App groups    : 1
+Processes     : 2
+Requests in top-level queue : 0
+
+----------- Application groups -----------
+/home/ubuntu/my-app (production):
+  App root: /home/ubuntu/my-app
+  Requests in queue: 0
+  * PID: 1987    Sessions: 0       Processed: 1       Uptime: 3m 36s
+    CPU: 0%      Memory  : 52M     Last used: 3m 36s ago
+  * PID: 2008    Sessions: 0       Processed: 1       Uptime: 3m 35s
+    CPU: 0%      Memory  : 41M     Last used: 3m 35s ago
+</code></pre>
+
+<p>Passenger never did this before the update and keeps the (forking...) always there now and it seems to have two apps running when it only needs one. I have searched their documents and know when it uses forking and when it doesn't and when it kills app automatically after a certain amount of time. Did they update something with the newest update that I missed in the docs? It seems that <code>2008  344.2 MB  89.4 MB  Passenger AppPreloader: /home/ubuntu/my-app (forking...)</code> always shows now and sometimes even has two of those when before the update I always had the process show without the <code>(forking...)</code>.</p>
+
+Tags:
+<ruby-on-rails><ubuntu><nginx><ubuntu-16.04><passenger>
+
+CreationDate:
+2018-05-14 00:45:09
+
+Y:
+HQ

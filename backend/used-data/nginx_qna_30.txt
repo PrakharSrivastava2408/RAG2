@@ -1,0 +1,68 @@
+Id:
+42443468
+
+Title:
+Nginx location configuration (subfolders)
+
+Body:
+<p>lets say I've a path like:</p>
+
+<pre><code>/var/www/myside/
+</code></pre>
+
+<p>that path contains two folders... let's say
+<code>/static</code> and <code>/manage</code></p>
+
+<p>I'd like to configure nginx to have an access to:</p>
+
+<p><code>/static</code> folder on <code>/</code> (eg. <a href="http://example.org/" rel="noreferrer">http://example.org/</a>)
+this folder has some .html files. </p>
+
+<p><code>/manage</code> folder on <code>/manage</code> (eg. <a href="http://example.org/manage" rel="noreferrer">http://example.org/manage</a>) in this case this folder contains Slim's PHP framework code - that means the index.php file is in <code>public</code> subfolder (eg. /var/www/mysite/manage/public/index.php)</p>
+
+<p>I've tried a lot of combinations such as </p>
+
+<pre><code>server {
+listen 80;
+server_name  example.org;
+error_log /usr/local/etc/nginx/logs/mysite/error.log;
+access_log /usr/local/etc/nginx/logs/mysite/access.log;
+root /var/www/mysite;
+
+location /manage {
+  root $uri/manage/public;
+
+  try_files $uri /index.php$is_args$args;
+}
+
+location / {
+  root $uri/static/;
+
+  index index.html;
+}
+
+location ~ \.php {
+  try_files $uri =404;
+  fastcgi_split_path_info ^(.+\.php)(/.+)$;
+  include fastcgi_params;
+  fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+  fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+  fastcgi_index index.php;
+  fastcgi_pass 127.0.0.1:9000;
+}
+</code></pre>
+
+<p>}</p>
+
+<p>The <code>/</code> works correctly anyway <code>manage</code> doesn't. Am I doing something wrong? Does anybody know what should I change?</p>
+
+<p>Matthew.</p>
+
+Tags:
+<php><http><nginx><server><slim>
+
+CreationDate:
+2017-02-24 16:21:29
+
+Y:
+HQ

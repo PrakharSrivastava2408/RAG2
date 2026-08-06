@@ -1,0 +1,14 @@
+{
+  "name": "ragproj-vercel",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "dotenv": "^17.4.2",
+    "pg": "^8.22.0"
+  }
+}

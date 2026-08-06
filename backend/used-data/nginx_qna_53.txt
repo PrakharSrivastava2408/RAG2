@@ -1,0 +1,17 @@
+Id:
+53229221
+
+Title:
+Terminal error: zsh: permission denied: ./startup.sh
+
+Body:
+<p>I am running a command <code>./startup.sh nginx:start</code> and I am getting this error message <code>zsh: permission denied: ./startup.sh</code> why could this be happening?</p>
+
+Tags:
+<macos><nginx><terminal><sh>
+
+CreationDate:
+2018-11-09 16:01:15
+
+Y:
+HQ

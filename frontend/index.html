@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Cloud Log Analyzer</title>
+    
+    <!-- Tailwind CSS for rapid, modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration for custom colors -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gray: {
+                            850: '#1f2937',
+                            900: '#111827',
+                            950: '#030712',
+                        },
+                        primary: {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Marked.js for parsing Markdown from the AI into clean HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Lucide Icons for sleek UI icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom scrollbar for a polished look */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+        
+        /* Markdown styles for the AI output */
+        .prose pre { background-color: #111827; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; border: 1px solid #374151; margin-top: 0.5rem; margin-bottom: 1rem; }
+        .prose code { color: #60a5fa; font-family: monospace; }
+        .prose h3 { font-size: 1.25rem; font-weight: 600; color: #f3f4f6; margin-top: 1.5rem; margin-bottom: 0.5rem; border-bottom: 1px solid #374151; padding-bottom: 0.25rem; }
+        .prose h4 { font-size: 1.1rem; font-weight: 600; color: #e5e7eb; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .prose p { margin-bottom: 1rem; color: #d1d5db; line-height: 1.6; }
+        .prose ul, .prose ol { margin-left: 1.5rem; margin-bottom: 1rem; color: #d1d5db; }
+        .prose li { margin-bottom: 0.25rem; list-style-type: disc; }
+        .prose strong { color: #f9fafb; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen font-sans antialiased selection:bg-primary-500 selection:text-white">
+
+    <div class="max-w-6xl mx-auto p-4 md:p-6 lg:p-8">
+        
+        <!-- Header -->
+        <header class="flex items-center gap-3 mb-8 border-b border-gray-800 pb-6">
+            <div class="bg-primary-600 p-2 rounded-lg">
+                <i data-lucide="terminal" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-white">Cloud Log Analyzer</h1>
+                <p class="text-sm text-gray-400">RAG-Powered DevOps Troubleshooting</p>
+            </div>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left Column: Input Panel -->
+            <div class="lg:col-span-5 space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
+                    <div class="flex items-center justify-between mb-3">
+                        <label for="logInput" class="block text-sm font-medium text-gray-300 flex items-center gap-2">
+                            <i data-lucide="file-code-2" class="w-4 h-4 text-gray-400"></i>
+                            Raw Error Log
+                        </label>
+                        <span class="text-xs px-2 py-1 bg-gray-800 text-gray-400 rounded-md border border-gray-700">Paste payload here</span>
+                    </div>
+                    
+                    <textarea 
+                        id="logInput" 
+                        rows="8" 
+                        class="w-full bg-gray-950 border border-gray-700 rounded-lg p-3 text-sm text-gray-300 font-mono focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all resize-y placeholder-gray-600"
+                        placeholder="Paste your Nginx, Docker, or Database error log here...&#10;&#10;e.g., bind() to 0.0.0.0:80 failed (98: Address already in use)"
+                    ></textarea>
+
+                    <button 
+                        id="analyzeBtn" 
+                        class="mt-4 w-full bg-primary-600 hover:bg-primary-500 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-primary-600/20"
+                    >
+                        <i data-lucide="cpu" class="w-4 h-4"></i>
+                        <span>Analyze Log with AI</span>
+                    </button>
+                    
+                    <!-- Error Message Box (Hidden by default) -->
+                    <div id="errorMessage" class="hidden mt-4 p-3 bg-red-900/30 border border-red-800 rounded-lg flex items-start gap-3">
+                        <i data-lucide="alert-circle" class="w-5 h-5 text-red-400 shrink-0 mt-0.5"></i>
+                        <p id="errorText" class="text-sm text-red-300 font-medium"></p>
+                    </div>
+                </div>
+                
+                <!-- Quick Tips Card -->
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+                    <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <i data-lucide="info" class="w-3.5 h-3.5"></i> Tip
+                    </h4>
+                    <p class="text-sm text-gray-500">The app will send requests to <code class="text-gray-400 bg-gray-800 px-1 py-0.5 rounded">/api/analyze-log</code> when deployed.</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Results Panel -->
+            <div class="lg:col-span-7">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-lg h-full min-h-[400px] flex flex-col relative overflow-hidden">
+                    
+                    <!-- Empty State (Shown initially) -->
+                    <div id="emptyState" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-gray-900 z-10">
+                        <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-4 border border-gray-700">
+                            <i data-lucide="search" class="w-8 h-8 text-gray-500"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-300 mb-1">Awaiting Log Data</h3>
+                        <p class="text-sm text-gray-500 max-w-sm">Paste a server error log on the left to vectorize it, search the knowledge base, and generate a solution.</p>
+                    </div>
+
+                    <!-- Loading State (Hidden initially) -->
+                    <div id="loadingState" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-gray-900 z-20 backdrop-blur-sm bg-gray-900/90">
+                        <i data-lucide="loader-2" class="w-10 h-10 text-primary-500 animate-spin mb-4"></i>
+                        <h3 class="text-base font-medium text-gray-300 animate-pulse">Running RAG Pipeline...</h3>
+                        <div class="mt-4 flex flex-col gap-2 text-xs text-gray-500 font-mono text-left">
+                            <span class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i> 1. Sanitizing log</span>
+                            <span class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i> 2. Generating Gemini Embedding</span>
+                            <span class="flex items-center gap-2 animate-pulse"><i data-lucide="circle-dashed" class="w-3 h-3 text-primary-500"></i> 3. Querying pgvector database...</span>
+                        </div>
+                    </div>
+
+                    <!-- Results Content (Hidden initially) -->
+                    <div id="resultsContent" class="hidden flex-col h-full z-30">
+                        
+                        <!-- Tabs -->
+                        <div class="flex border-b border-gray-800 mb-4 gap-4">
+                            <button class="pb-2 text-sm font-medium text-primary-400 border-b-2 border-primary-500 flex items-center gap-2">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i> AI Solution
+                            </button>
+                        </div>
+
+                        <!-- Markdown Output Area -->
+                        <div id="solutionBox" class="prose prose-invert max-w-none flex-grow overflow-y-auto pr-2 pb-6">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <!-- Context Used Accordion (Footer) -->
+                        <div class="mt-4 border-t border-gray-800 pt-4">
+                            <details class="group">
+                                <summary class="flex items-center justify-between cursor-pointer list-none text-sm font-medium text-gray-400 hover:text-gray-300 select-none">
+                                    <span class="flex items-center gap-2">
+                                        <i data-lucide="database" class="w-4 h-4"></i>
+                                        View Retrieved Context (Database Matches)
+                                    </span>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180"></i>
+                                </summary>
+                                <div id="contextBox" class="mt-3 space-y-2 max-h-40 overflow-y-auto pr-2">
+                                    <!-- Injected by JS -->
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // DOM Elements
+        const logInput = document.getElementById('logInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const emptyState = document.getElementById('emptyState');
+        const loadingState = document.getElementById('loadingState');
+        const resultsContent = document.getElementById('resultsContent');
+        const solutionBox = document.getElementById('solutionBox');
+        const contextBox = document.getElementById('contextBox');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+
+        // Main Analyze Function
+        analyzeBtn.addEventListener('click', async () => {
+            const logText = logInput.value.trim();
+            
+            // Basic validation
+            if (!logText) {
+                showError("Please paste an error log to analyze.");
+                return;
+            }
+
+            // Reset UI for loading
+            hideError();
+            analyzeBtn.disabled = true;
+            emptyState.classList.add('hidden');
+            resultsContent.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+
+            try {
+                const response = await fetch('/api/analyze-log', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ log_text: logText })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || `Server responded with status ${response.status}`);
+                }
+
+                // Render the results
+                renderResults(data);
+
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                
+                // Specifically check for connection refused (backend not running)
+                if (error.message.includes('Failed to fetch')) {
+                    showError("Cannot connect to backend. Is your Node.js server running on port 3000?");
+                } else {
+                    showError(error.message);
+                }
+                
+                // Show empty state again if we failed before getting results
+                if (resultsContent.classList.contains('hidden')) {
+                    emptyState.classList.remove('hidden');
+                }
+            } finally {
+                // Cleanup loading state
+                loadingState.classList.add('hidden');
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        // Render the RAG output to the UI
+        function renderResults(data) {
+            // Use marked.js to convert the AI's markdown response to HTML
+            // Using DOMPurify in a production app would be wise here
+            solutionBox.innerHTML = marked.parse(data.solution || "No solution provided.");
+
+            // Clear previous context
+            contextBox.innerHTML = '';
+
+            // Render the retrieved documents so the user can see what the AI read
+            if (data.context_used && data.context_used.length > 0) {
+                data.context_used.forEach((doc, index) => {
+                    const docDiv = document.createElement('div');
+                    docDiv.className = "p-3 bg-gray-950 border border-gray-800 rounded-md text-xs text-gray-400 font-mono leading-relaxed";
+                    // Truncate long contexts for UI neatness
+                    const displayDoc = doc.length > 300 ? doc.substring(0, 300) + '...' : doc;
+                    docDiv.textContent = `Match ${index + 1}:\n${displayDoc}`;
+                    contextBox.appendChild(docDiv);
+                });
+            } else {
+                contextBox.innerHTML = '<p class="text-xs text-gray-500 italic">No relevant documentation found in the vector database.</p>';
+            }
+
+            // Reveal the results panel
+            resultsContent.classList.remove('hidden');
+            resultsContent.classList.add('flex');
+        }
+
+        // Error Handling UI
+        function showError(msg) {
+            errorText.textContent = msg;
+            errorMessage.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorMessage.classList.add('hidden');
+            errorText.textContent = '';
+        }
+
+        // Add 'Cmd/Ctrl + Enter' shortcut to submit
+        logInput.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                analyzeBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>

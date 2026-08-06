@@ -1,0 +1,67 @@
+Id:
+49767001
+
+Title:
+How to solve nginx - no live upstreams while connecting to upstream client?
+
+Body:
+<p>Currently I am running a load test using JMeter on our system build on grails 3 running on tomcat. After sending 20k request per second I got “no live upstreams while connecting to upstream client” in nginx error log. Our application is multi-tenant base so I need to perform high load.  Here is my nginx configuration. </p>
+
+<pre><code>worker_processes  16;
+worker_rlimit_nofile 262144;
+error_log  /var/log/nginx/error.log;
+
+events {
+    worker_connections  24576;
+    use epoll;
+    multi_accept on;
+}
+
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    keepalive_timeout  600;
+    keepalive_requests 100000;
+    access_log off;
+    server_names_hash_max_size  4096;
+    underscores_in_headers  on;
+    client_max_body_size 8192m;
+    log_format vhost '$remote_addr - $remote_user [$time_local] $status "$request" $body_bytes_sent "$http_referer" "$http_user_agent" "http_x_forwarded_for"';
+
+    proxy_connect_timeout      120;
+    proxy_send_timeout         120;
+    proxy_read_timeout         120;
+
+
+    gzip  on;
+    gzip_types text/plain application/xml text/css text/js text/xml application/x-javascript text/javascript application/json application/xml+rss image application/javascript;
+    gzip_min_length  1000;
+    gzip_static on;
+    gzip_vary on;
+    gzip_buffers 16 8k;
+    gzip_comp_level 6;
+    gzip_proxied any;
+    gzip_disable "msie6";
+
+    proxy_intercept_errors on;
+    recursive_error_pages on;
+
+    ssl_prefer_server_ciphers On;
+    ssl_ciphers ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:ECDHE-RSA-AES256-SHA:RC4-SHA;
+    include /etc/nginx/conf.d/*.conf;
+}
+</code></pre>
+
+<p>How do I configure for high concurrent load?</p>
+
+Tags:
+<nginx>
+
+CreationDate:
+2018-04-11 05:17:11
+
+Y:
+HQ

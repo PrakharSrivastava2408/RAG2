@@ -1,0 +1,26 @@
+Id:
+41755100
+
+Title:
+How to redirect only the root path in nginx?
+
+Body:
+<p>I only want to redirect the root path from domain A to domain B. For example, if user type in <a href="https://www.a.com/" rel="noreferrer">https://www.a.com/</a> or <a href="https://www.a.com" rel="noreferrer">https://www.a.com</a> or <a href="http://a.com" rel="noreferrer">http://a.com</a> all redirect to <a href="https://www.b.com/" rel="noreferrer">https://www.b.com/</a>, but if user type in <a href="https://www.a.com/something/" rel="noreferrer">https://www.a.com/something/</a> then it keep there without redirect.</p>
+
+<p>I tried the following:</p>
+
+<pre><code>location / {
+    return 301 https://www.b.com/;
+}
+</code></pre>
+
+<p>but it redirect all to www.b.com even user type in <a href="https://www.a.com/something/" rel="noreferrer">https://www.a.com/something/</a>.</p>
+
+Tags:
+<redirect><nginx>
+
+CreationDate:
+2017-01-20 02:27:22
+
+Y:
+HQ

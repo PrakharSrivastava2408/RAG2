@@ -1,0 +1,20 @@
+Id:
+49575568
+
+Title:
+Partialy reload my website Nginx?
+
+Body:
+I am currently working on the development of a platform and I was wondering how sites like Behance, Artsation and upwork do to partially reload their page. (When you click on a link, the page loads well but the menu does not move just like the footer). I first thought of Nginx but Artsation does not seem to be used Nginx.
+I would like to know the things to reproduce this kind of loading page if someone could enlighten me on the subject.
+
+Thanks
+
+Tags:
+<php><ajax><laravel><nginx>
+
+CreationDate:
+2018-03-30 13:39:30
+
+Y:
+LQ_EDIT

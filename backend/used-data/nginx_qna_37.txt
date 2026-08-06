@@ -1,0 +1,48 @@
+Id:
+45822565
+
+Title:
+Is there a way to use multiple auth_request directives in nginx?
+
+Body:
+<p>I would like to use multiple <code>auth_request</code> directives in order to try authentication with multiple servers - i.e. if the first auth server returns <code>403</code>, try the second auth server. I tried a straightforward approach like this:</p>
+
+<pre><code>location /api {
+    satisfy any;
+    auth_request    /auth-1/;
+    auth_request    /auth-2/;
+    proxy_pass http://api_impl;
+}
+
+location /auth-1/ {
+    internal;
+    proxy_pass              http://auth_server_1;
+    proxy_pass_request_body off;
+    proxy_set_header        Content-Length "";
+    proxy_set_header        X-Original-URI $request_uri;
+}
+
+location /auth-2/ {
+    internal;
+    proxy_pass              http://auth_server_2;
+    proxy_pass_request_body off;
+    proxy_set_header        Content-Length "";
+    proxy_set_header        X-Original-URI $request_uri;
+}
+</code></pre>
+
+<p>But nginx wouldn't parse the config file. I received the response</p>
+
+<pre><code>nginx: [emerg] "auth_request" directive is duplicate
+</code></pre>
+
+<p>Is there a way to achive such functionality in nginx?</p>
+
+Tags:
+<authentication><nginx><request>
+
+CreationDate:
+2017-08-22 16:13:44
+
+Y:
+HQ

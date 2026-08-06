@@ -1,0 +1,57 @@
+Id:
+37072843
+
+Title:
+Docker php-fpm/nginx set-up: php-fpm throwing blank 500, no error logs
+
+Body:
+<p>Git repo of project: <a href="https://github.com/tombusby/docker-laravel-experiments" rel="noreferrer">https://github.com/tombusby/docker-laravel-experiments</a> (HEAD at time of writing is 823fd22).</p>
+
+<p>Here is my docker-compose.yml:</p>
+
+<pre><code>nginx:
+  image: nginx:stable
+  volumes:
+    - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  volumes_from:
+    - php
+  links:
+    - php:php
+  ports:
+    - 80:80
+
+php:
+  image: php:5.6-fpm
+  volumes:
+    - ./src:/var/www/html
+  expose:
+    - 9000
+</code></pre>
+
+<p>Into src/ I've created a fresh laravel project. This all functions correctly if I swap out index.php for one with a basic <code>echo "hello world";</code> and if I use <code>echo "called";exit();</code> I can identify that part of laravel's index.php does get executed.</p>
+
+<p>It dies at line 53:</p>
+
+<pre><code>$response = $kernel-&gt;handle(
+    $request = Illuminate\Http\Request::capture()
+);
+</code></pre>
+
+<p>I have no idea why this happens, and I've tried using <code>docker exec -it &lt;cid&gt; bash</code> to have a look around my php-fpm container for error logs. All the logs are redirected to stderr/stdout (which is collected by docker).</p>
+
+<p>Here is the output that docker collects:</p>
+
+<pre><code>php_1   | 172.17.0.3 -  06/May/2016:12:09:34 +0000 "GET /index.php" 500
+nginx_1 | 192.168.99.1 - - [06/May/2016:12:09:34 +0000] "GET /index.php HTTP/1.1" 500 5 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36" "-"
+</code></pre>
+
+<p>As you can see "500" does pretty much nothing to help me work out why there was an error, but I can't find any way of getting the stack trace or anything like the proper error logs that apache's php extension would have produced.</p>
+
+Tags:
+<php><nginx><docker><error-logging>
+
+CreationDate:
+2016-05-06 12:47:20
+
+Y:
+HQ

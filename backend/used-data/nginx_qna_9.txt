@@ -1,0 +1,60 @@
+Id:
+37128262
+
+Title:
+nginx unexpected end of file, expecting ";" or "}" in /etc/nginx/sites-enabled/default:20 over Raspbian
+
+Body:
+<p>I'm new at nginx and Raspberry.</p>
+
+<p>I installed nginx using </p>
+
+<blockquote>
+  <p>sudo apt-get install</p>
+</blockquote>
+
+<p>And everything was fine at that point. The problem came when I tried to restart nginx, It threw this error</p>
+
+<blockquote>
+  <p>Job for nginx.service failed. See 'systemctl status ngins.service' and 'journaldtl -xn' for details</p>
+</blockquote>
+
+<p>After an investigation I found that the problem is the next error:</p>
+
+<blockquote>
+  <p>unexpected end of file, expecting ";" or "}" in /etc/nginx/sites-enabled/default:20</p>
+</blockquote>
+
+<p>My default file is:</p>
+
+<pre><code># Please see /usr/share/doc/nginx-doc/examples/ for more detailed examples.
+## 
+
+server {
+    #listen   80; ## listen for ipv4; this line is default and implied
+    #listen   [::]:80 default_server ipv6only=on; ## listen for ipv6
+    listen 80;
+    server_name $domain_name;
+    root /var/www;
+    index index.html index.htm;
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+
+
+    # Make site accessible from http://localhost/
+    server_name localhost;
+
+    location /
+</code></pre>
+
+<p>I hope you can help me :)</p>
+
+Tags:
+<nginx><raspbian><raspberry-pi3>
+
+CreationDate:
+2016-05-10 02:20:05
+
+Y:
+HQ

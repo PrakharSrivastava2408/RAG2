@@ -1,0 +1,60 @@
+Id:
+49918313
+
+Title:
+413 error with Kubernetes and Nginx ingress controller
+
+Body:
+<p>I'm trying to change the <code>client_max_body_size</code> value, so my nginx ingress will not return 413 error.  </p>
+
+<p>I've tested few solutions.<br>
+Here is my test config map:  </p>
+
+<pre><code>kind: ConfigMap
+apiVersion: v1
+data:
+  proxy-connect-timeout: "15"
+  proxy-read-timeout: "600"
+  proxy-send-timeout: "600"
+  proxy-body-size: "8m"
+  hsts-include-subdomains: "false"
+  body-size: "64m"
+  server-name-hash-bucket-size: "256"
+  client-max-body-size: "50m"
+metadata:
+  name: nginx-configuration
+  namespace: ingress-nginx
+  labels:
+    app: ingress-nginx
+</code></pre>
+
+<p>These changes has no effect at all, after loading it, in the nginx controller log I can see the information about reloading config map, but the values in nginx.conf are the same:  </p>
+
+<pre><code>root@nginx-ingress-controller-95db685f5-b5s6s:/# cat /etc/nginx/nginx.conf | grep client_max                                                                                                       
+                        client_max_body_size                    "8m";
+                        client_max_body_size                    "1m";
+                        client_max_body_size                    "1m";
+                        client_max_body_size                    "1m";
+                        client_max_body_size                    "1m";
+                        client_max_body_size                    "1m";
+                        client_max_body_size                    "1m";
+                        client_max_body_size                    "1m";
+                        client_max_body_size                    "1m";
+                        client_max_body_size                    "1m";
+                        client_max_body_size                    "1m";
+                        client_max_body_size                    "1m";
+                        client_max_body_size                    "1m";
+</code></pre>
+
+<p>My nginx-controller config uses this image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.13.0  </p>
+
+<p>How can I force the nginx to change the value? I need to change it globally, for all my ingresses.</p>
+
+Tags:
+<nginx><kubernetes>
+
+CreationDate:
+2018-04-19 10:06:07
+
+Y:
+HQ

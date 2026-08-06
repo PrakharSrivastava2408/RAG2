@@ -1,0 +1,17 @@
+Id:
+36268272
+
+Title:
+Nginx - Allowing origin IP
+
+Body:
+<p>Nginx supports <code>allow</code> and <code>deny</code> syntax to restrict IPs, e.g. <code>allow 192.168.1.1;</code>. But if traffic goes through a reverse proxy, the IP will refer to the proxy's IP. So how can it be configured to whitelist a specific origin IP and deny all other incoming requests?</p>
+
+Tags:
+<nginx><proxy><whitelist>
+
+CreationDate:
+2016-03-28 18:13:14
+
+Y:
+HQ

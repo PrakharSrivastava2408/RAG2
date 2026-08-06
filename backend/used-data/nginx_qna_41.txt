@@ -1,0 +1,48 @@
+Id:
+47153308
+
+Title:
+Symfony no muestra la barra de Debug
+
+Body:
+Buenas , tengo montado una instancia de Symfony el linux con apache y NGINX.
+Lo que hago es arrancar el servidor de symfony con el comando
+
+    php bin/console server:start
+
+Ahora arranco en mi navegador y me carga la página inicial de Symfony pero no me muestra la barra inferior (barra de profiler)
+
+He revisado el fichero "config_dev.yml" y creo que lo tengo correcto
+
+    imports:
+    - { resource: config.yml }
+
+framework:
+    router:
+        resource: '%kernel.project_dir%/app/config/routing_dev.yml'
+        strict_requirements: true
+    profiler: { only_exceptions: false }
+
+web_profiler:
+    toolbar: true
+    intercept_redirects: false
+
+
+
+En cambio si lanzo una ***RUTA*** que no tengo me da error y me sale la barra en la parte inferior
+
+[Imagen][1]
+
+Gracias,
+
+
+  [1]: https://i.stack.imgur.com/dZ5IP.png
+
+Tags:
+<php><symfony><nginx><symfony-3.3><symfony3.x>
+
+CreationDate:
+2017-11-07 08:38:06
+
+Y:
+LQ_EDIT

@@ -1,0 +1,23 @@
+Nginx Error: Address already in use (Port Conflict)
+
+When you see an Nginx error like bind() to 0.0.0.0:80 failed (98: Address already in use), it means another process (often Apache, Skype, or a ghost Nginx process) is currently occupying port 80.
+Solution:
+You need to find and kill the process using the port. Run sudo netstat -tulpn | grep :80 to find the PID of the offending process. Then, terminate it using sudo kill -9 <PID>. Finally, restart Nginx with sudo systemctl restart nginx.
+
+Nginx Error: Permission Denied
+
+If Nginx logs open() "/var/www/html/..." failed (13: Permission denied), the Nginx worker process (usually running as the www-data user) does not have read access to the web directory.
+Solution:
+Update the ownership of the web directory so the Nginx user can read it. Run the command sudo chown -R www-data:www-data /var/www/html. You should also ensure directories have 755 permissions by running sudo find /var/www/html -type d -exec chmod 755 {} \;.
+
+Docker Error: Out of Memory (OOM) Kill
+
+When a Docker container crashes and the kernel logs show Memory cgroup out of memory: Killed process, it means the container exceeded its allocated RAM limits, triggering the Linux OOM killer.
+Solution:
+You need to increase the memory limit for the container. If you are using docker run, add the flag --memory="2g". If you are using Docker Compose, update your docker-compose.yml file to include a deploy.resources.limits.memory key set to a higher value, then run docker-compose up -d.
+
+Backend Error: Database Connection Refused
+
+An error like connect ECONNREFUSED 127.0.0.1:5432 means the backend application is trying to reach a PostgreSQL database on the local machine, but nothing is listening on port 5432.
+Solution:
+First, verify that the PostgreSQL service is actually running by executing sudo systemctl status postgresql. If it is down, start it with sudo systemctl start postgresql. If it is running, check your application's .env file to ensure the DATABASE_URL is pointing to the correct host and port.

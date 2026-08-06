@@ -1,0 +1,21 @@
+Id:
+44796056
+
+Title:
+What's the better approach: serving static files with Express or nginx?
+
+Body:
+<p>I'm building a Node.js applications and I'm using nginx as a reverse proxy. My application has some static files I need to serve and a Socket.io server. </p>
+
+<p>I know that I can serve static files directly with Express (using express.static middleware). Also I can point nginx directly to the directory where my static files are located, so they would be served by nginx.</p>
+
+<p>So, the question: which one is the better approach? Which pros and cons can I face while using each approach?</p>
+
+Tags:
+<node.js><express><nginx><static-files>
+
+CreationDate:
+2017-06-28 07:23:29
+
+Y:
+HQ

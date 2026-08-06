@@ -1,0 +1,31 @@
+Id:
+39835855
+
+Title:
+Location of the Nginx default index.html file on MAC OS
+
+Body:
+<p><a href="https://i.stack.imgur.com/k3gGi.png" rel="noreferrer"><img src="https://i.stack.imgur.com/k3gGi.png" alt="enter image description here"></a></p>
+
+<p>I have successfully installed nginx on my MAC with homebrew</p>
+
+<pre><code>brew install nginx
+</code></pre>
+
+<p>but i can't find from where is this default page called.</p>
+
+<p>In nginx.conf under location says</p>
+
+<pre><code>root html;
+</code></pre>
+
+<p>and i can't find it. Please help.</p>
+
+Tags:
+<macos><nginx>
+
+CreationDate:
+2016-10-03 16:06:45
+
+Y:
+HQ

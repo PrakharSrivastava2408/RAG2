@@ -1,0 +1,50 @@
+Id:
+50189365
+
+Title:
+uWSGI error hr_instance_read(): Connection reset by peer
+
+Body:
+<p>I have deployed a flask web application using uWSGI and NGINX as the reverse proxy. The application response time is about 9ms in average but after a batch of requests my workers crashing and I got this log on my uWSGI log:</p>
+
+<pre><code>[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 24488] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 4059] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 46764] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 9951] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 9449] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 51355] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 39565] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 63142] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 7861] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 10165] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 10917] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+[uwsgi-http key: backend client_addr: 172.17.0.1 client_port: 20392] hr_instance_read(): Connection reset by peer [plugins/http/http.c line 647]
+</code></pre>
+
+<p><strong>The uWSGI config:</strong></p>
+
+<pre><code>[uwsgi]
+http = 0.0.0.0:7000
+wsgi-file = app.py
+callable = app
+processes = 5
+lazy = true
+lazy-apps = true
+buffer-size = 16384
+logto = /root/logs/data-gathering.log
+</code></pre>
+
+<p><strong>Env:</strong></p>
+
+<pre><code>uWSGI==2.0.17
+Flask==0.12.2
+</code></pre>
+
+Tags:
+<python><nginx><uwsgi>
+
+CreationDate:
+2018-05-05 12:19:17
+
+Y:
+HQ

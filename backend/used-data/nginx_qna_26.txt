@@ -1,0 +1,74 @@
+Id:
+41986066
+
+Title:
+Performance and reliability when using multiple Docker containers VS standard Node cluster
+
+Body:
+<h1>Performance and reliability when using multiple Docker containers VS standard Node cluster</h1>
+
+<p>Hi, I have a question regarding the performance, reliability and growth potential of two setups that I've encountered. I'm far from Docker or cluster expert, so any advise or tip would be really appreciated.</p>
+
+<h2>The app</h2>
+
+<p>Typical <a href="https://meanjs.org/" rel="noreferrer">MEAN stack web application</a> running on <code>Node v6.9.4</code>. Nothing fancy, standard setup.</p>
+
+<h2>The problem and possible solutions that I've found</h2>
+
+<p>a) Standard Linux server with NGINX (reverse proxy) and NodeJS</p>
+
+<p>b) Standard Linux server with NGINX (reverse proxy) and NodeJS
+ Cluster. <a href="https://nodejs.org/dist/latest-v6.x/docs/api/cluster.html#cluster_cluster" rel="noreferrer">Using Node's Cluster module</a></p>
+
+<p>c) "Dockerized" NodeJS app cloned 3 times (3 containers) using NGINX's load balancer. <a href="http://anandmanisankar.com/posts/docker-container-nginx-node-redis-example/" rel="noreferrer">Credit for the idea goes to Anand Sankar</a></p>
+
+<pre><code>// Example nginx load balance config
+server app1:8000 weight=10 max_fails=3 fail_timeout=30s;
+server app2:8000 weight=10 max_fails=3 fail_timeout=30s;
+server app3:8000 weight=10 max_fails=3 fail_timeout=30s;
+
+// Example docker-compose.yml
+version: '2'
+services:
+    nginx:
+        build: docker/definitions/nginx
+        links:
+            - app1:app1
+            - app2:app2
+            - app3:app3
+        ports: 
+            - "80:80"
+    app1:
+        build: app/.
+    app2:
+        build: app/.
+    app3:
+        build: app/.
+</code></pre>
+
+<p>d) All together. "Dockerized" NodeJS app (multiple containers) with Cluster configured inside and on top of the 3 containers - NGINX's load balancer.</p>
+
+<p><strong>If I get this correctly, having 3 x NodeJS containers running the app, where each of these app replicas support the NodeJS clustering, should lead to incredible performance.</strong></p>
+
+<p>3 x containers x 4 workers, should mean 12 nodes to handle all requests/responses. If that's correct, the only drawback would be the more powerful, in terms of hardware, machine to support this.</p>
+
+<p>Anyway, my logic may be totally wrong, so I'm <strong>looking for any comments or feedback on that!</strong></p>
+
+<h2>Goal</h2>
+
+<p>My goal is to have production ready, stable environments, which are ready to take some load. We're not speaking about thousands of concurrent connections at the same time, etc. Keeping the infrastructure scalable and flexible is a big "+".</p>
+
+<hr>
+
+<p>Hopefully, the question makes sense. Sorry for the long post, but I wanted to keep it clear. </p>
+
+<p>Thank you!</p>
+
+Tags:
+<node.js><express><nginx><docker><docker-compose>
+
+CreationDate:
+2017-02-01 17:34:00
+
+Y:
+HQ
