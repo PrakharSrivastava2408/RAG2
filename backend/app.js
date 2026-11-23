@@ -96,12 +96,7 @@ ${log_text}
         if (error.status === 503 || error?.message?.includes('503')) {
             return res.status(503).json({ error: "Model is busy, try again later." });
         }
-
-        res.status(500).json({ error: "An internal server error occurred during log analysis.",
-            
-        details: error.message 
-
-        });
+        res.status(500).json({ error: "An internal server error occurred during log analysis.",details: error});
     }
 });
 
