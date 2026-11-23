@@ -2,6 +2,10 @@ import dotenv from 'dotenv';
 import { Pool } from 'pg';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+export const config = {
+  maxDuration: 60,
+};
+
 dotenv.config();
 
 const pool = new Pool({
@@ -56,7 +60,7 @@ export default async function handler(req, res) {
   try {
     const cleanLog = sanitizeLog(log_text);
 
-    const embeddingModel = genAI.getGenerativeModel({ model: 'text-embedding-004' });
+    const embeddingModel = genAI.getGenerativeModel({ model: 'gemini-embedding-001' });
     const embeddingResult = await embeddingModel.embedContent(cleanLog);
     const vectorString = JSON.stringify(embeddingResult.embedding.values);
 
@@ -70,7 +74,7 @@ export default async function handler(req, res) {
     const retrievedDocs = rows.map((row) => row.content);
     const contextString = retrievedDocs.join('\n\n---\n\n');
 
-    const llmModel = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const llmModel = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
     const prompt = `
 You are a senior DevOps engineer troubleshooting server infrastructure.
 Analyze the following server error log.
@@ -100,6 +104,6 @@ ${log_text}
       return res.status(503).json({ error: 'Model is busy, try again later.' });
     }
 
-    res.status(500).json({ error: 'An internal server error occurred during log analysis.' });
+    res.status(500).json({ error: 'An internal server error occurred during log analysis.', detail: error.message });
   }
 }

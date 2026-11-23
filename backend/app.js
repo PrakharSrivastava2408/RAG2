@@ -46,7 +46,7 @@ app.post('/api/analyze-log', async (req, res) => {
         const cleanLog = sanitizeLog(log_text);
 
         console.log("[2/4] Generating vector embedding for the log...");
-        const embeddingModel = genAI.getGenerativeModel({ model: "gemini-embedding-2" });
+        const embeddingModel = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
         const embeddingResult = await embeddingModel.embedContent(cleanLog);
         const vectorArray = embeddingResult.embedding.values;
         const vectorString = JSON.stringify(vectorArray);
@@ -63,8 +63,8 @@ app.post('/api/analyze-log', async (req, res) => {
         const retrievedDocs = rows.map(row => row.content);
         const contextString = retrievedDocs.join('\n\n---\n\n');
 
-        console.log("[4/4] Generating solution with Gemini 3.6 Flash...");
-        const llmModel = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
+        console.log("[4/4] Generating solution with Gemini 1.5 Flash...");
+        const llmModel = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
         const prompt = `
 You are a senior DevOps engineer troubleshooting server infrastructure.
@@ -96,7 +96,8 @@ ${log_text}
         if (error.status === 503 || error?.message?.includes('503')) {
             return res.status(503).json({ error: "Model is busy, try again later." });
         }
-        res.status(500).json({ error: "An internal server error occurred during log analysis.",details: error});
+
+        res.status(500).json({ error: "An internal server error occurred during log analysis.", detail: error.message });
     }
 });
 
