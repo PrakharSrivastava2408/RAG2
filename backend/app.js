@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,7 +19,10 @@ app.use(express.json());
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    ssl: { rejectUnauthorized: false },
+    max: 20,//max no. of clients in the pool
+    idleTimeoutMillis: 30000, //close idle clients after 30 sec
+    connectionTimeoutMillis: 2000,
 });
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
@@ -41,12 +44,13 @@ app.post('/api/analyze-log', async (req, res) => {
         console.log("\n[1/4] Received log. Sanitizing...");
         const cleanLog = sanitizeLog(log_text);
 
+        // console.log(ModelService.ListModels);
+
         console.log("[2/4] Generating vector embedding for the log...");
-        const embeddingModel = genAI.getGenerativeModel({ model: "gemini-embedding-2" });
+        const embeddingModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
         const embeddingResult = await embeddingModel.embedContent(cleanLog);
         const vectorArray = embeddingResult.embedding.values;
         const vectorString = JSON.stringify(vectorArray);
-
         console.log("[3/4] Searching database for relevant documentation...");
         const dbQuery = `
             SELECT content 
@@ -60,7 +64,7 @@ app.post('/api/analyze-log', async (req, res) => {
         const contextString = retrievedDocs.join('\n\n---\n\n');
 
         console.log("[4/4] Generating solution with Gemini 3.5 Flash...");
-        const llmModel = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
+        const llmModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         
         const prompt = `
 You are a senior DevOps engineer troubleshooting server infrastructure.
