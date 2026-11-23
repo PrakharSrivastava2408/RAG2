@@ -20,8 +20,8 @@ app.use(express.json());
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
-    max: 20,//max no. of clients in the pool
-    idleTimeoutMillis: 30000, //close idle clients after 30 sec
+    max: 20,
+    idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
 });
 
@@ -41,16 +41,16 @@ app.post('/api/analyze-log', async (req, res) => {
         if (!log_text) {
             return res.status(400).json({ error: "Missing 'log_text' in request body." });
         }
+
         console.log("\n[1/4] Received log. Sanitizing...");
         const cleanLog = sanitizeLog(log_text);
 
-        // console.log(ModelService.ListModels);
-
         console.log("[2/4] Generating vector embedding for the log...");
-        const embeddingModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
+        const embeddingModel = genAI.getGenerativeModel({ model: "gemini-embedding-2" });
         const embeddingResult = await embeddingModel.embedContent(cleanLog);
         const vectorArray = embeddingResult.embedding.values;
         const vectorString = JSON.stringify(vectorArray);
+
         console.log("[3/4] Searching database for relevant documentation...");
         const dbQuery = `
             SELECT content 
@@ -59,13 +59,13 @@ app.post('/api/analyze-log', async (req, res) => {
             LIMIT 3;
         `;
         const { rows } = await pool.query(dbQuery, [vectorString]);
-        
+
         const retrievedDocs = rows.map(row => row.content);
         const contextString = retrievedDocs.join('\n\n---\n\n');
 
-        console.log("[4/4] Generating solution with Gemini 3.5 Flash...");
-        const llmModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        
+        console.log("[4/4] Generating solution with Gemini 3.6 Flash...");
+        const llmModel = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
+
         const prompt = `
 You are a senior DevOps engineer troubleshooting server infrastructure.
 Analyze the following server error log. 
@@ -90,16 +90,21 @@ ${log_text}
             context_used: retrievedDocs
         });
 
-    } catch (error){
+    } catch (error) {
         console.error("Error analyzing log:", error);
+
+        if (error.status === 503 || error?.message?.includes('503')) {
+            return res.status(503).json({ error: "Model is busy, try again later." });
+        }
+
         res.status(500).json({ error: "An internal server error occurred during log analysis." });
     }
 });
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.send('Cloud Log Analyzer API is running.');
 });
 
-app.listen(port,()=>{
+app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
 });

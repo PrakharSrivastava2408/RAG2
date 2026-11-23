@@ -6,7 +6,7 @@ dotenv.config();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl: { rejectUnauthorized: false }
 });
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
   try {
     const cleanLog = sanitizeLog(log_text);
 
-    const embeddingModel = genAI.getGenerativeModel({ model: 'gemini-embedding-2' });
+    const embeddingModel = genAI.getGenerativeModel({ model: 'text-embedding-004' });
     const embeddingResult = await embeddingModel.embedContent(cleanLog);
     const vectorString = JSON.stringify(embeddingResult.embedding.values);
 
@@ -70,7 +70,7 @@ export default async function handler(req, res) {
     const retrievedDocs = rows.map((row) => row.content);
     const contextString = retrievedDocs.join('\n\n---\n\n');
 
-    const llmModel = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
+    const llmModel = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     const prompt = `
 You are a senior DevOps engineer troubleshooting server infrastructure.
 Analyze the following server error log.
@@ -95,6 +95,11 @@ ${log_text}
     });
   } catch (error) {
     console.error('Error analyzing log:', error);
+
+    if (error.status === 503 || error?.message?.includes('503')) {
+      return res.status(503).json({ error: 'Model is busy, try again later.' });
+    }
+
     res.status(500).json({ error: 'An internal server error occurred during log analysis.' });
   }
 }
