@@ -97,7 +97,11 @@ ${log_text}
             return res.status(503).json({ error: "Model is busy, try again later." });
         }
 
-        res.status(500).json({ error: "An internal server error occurred during log analysis." });
+        res.status(500).json({ error: "An internal server error occurred during log analysis.",
+            
+        details: error.message 
+
+        });
     }
 });
 
